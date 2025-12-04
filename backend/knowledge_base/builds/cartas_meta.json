@@ -1,0 +1,155 @@
+{
+  "cartas_meta": [
+    {
+      "jogador": "Neymar Jr",
+      "versao": "Big Time 2015",
+      "overall_base": 97,
+      "posicao_principal": "LWF",
+      "posicoes_alternativas": ["CF", "AMF"],
+      "por_que_e_meta": "Drible quebrado + velocidade extrema + finesse shot perfeito",
+      "build_especifica": {
+        "CF": {
+          "distribuicao": [
+            {"atributo": "Offensive Awareness", "pontos": 10, "justificativa": "Movimentação sem bola é chave"},
+            {"atributo": "Finishing", "pontos": 10, "justificativa": "Já tem chute bom, maximizar"},
+            {"atributo": "Speed", "pontos": 8, "justificativa": "Compensar falta de físico"},
+            {"atributo": "Dribbling", "pontos": 7, "justificativa": "Já é alto, não precisa muito"}
+          ],
+          "total_pontos": 35,
+          "playstyle_recomendado": "Goal Poacher",
+          "dicas_taticas": [
+            "Use como falso 9 - caia para receber",
+            "Finesse shot cortando para dentro é GARANTIDO",
+            "Evite confronto físico direto com zagueiros fortes",
+            "Melhor jogada: recebe, dribla curto, chuta (não segure demais)"
+          ]
+        },
+        "LWF": {
+          "distribuicao": [
+            {"atributo": "Dribbling", "pontos": 10, "justificativa": "Principal arma, precisa estar no máximo"},
+            {"atributo": "Speed", "pontos": 10, "justificativa": "Explosão é diferencial"},
+            {"atributo": "Curl", "pontos": 8, "justificativa": "Finesse shot é dele"},
+            {"atributo": "Ground Pass", "pontos": 7, "justificativa": "Assistências precisas"}
+          ],
+          "total_pontos": 35,
+          "playstyle_recomendado": "Prolific Winger",
+          "dicas_taticas": [
+            "Drible 1v1 pela linha é quase impossível parar",
+            "Corte para dentro no ângulo de 45° + finesse = gol",
+            "Use double touch (direção 2x) para deixar lateral no chão",
+            "Não force passes longos, ele é melhor cortando"
+          ]
+        }
+      },
+      "quando_usar": "Contra defesas lentas ou em contra-ataques. Evite contra times físicos com marcação pesada.",
+      "comentario_pro": "Essa versão do Neymar é absurda. O drible dele tem uma animação única que o jogo não consegue ler direito. É quase trapaceado usar ele bem."
+    },
+    {
+      "jogador": "Cristiano Ronaldo",
+      "versao": "Legendary 2008",
+      "overall_base": 98,
+      "posicao_principal": "CF",
+      "posicoes_alternativas": ["RWF"],
+      "por_que_e_meta": "Físico + cabeceio + finalização = completo demais",
+      "build_especifica": {
+        "CF": {
+          "distribuicao": [
+            {"atributo": "Offensive Awareness", "pontos": 10, "justificativa": "Posicionamento perfeito"},
+            {"atributo": "Finishing", "pontos": 10, "justificativa": "Chute de qualquer ângulo"},
+            {"atributo": "Heading", "pontos": 9, "justificativa": "Melhor cabeceador do jogo"},
+            {"atributo": "Physical Contact", "pontos": 8, "justificativa": "Aguenta a marcação"}
+          ],
+          "total_pontos": 37,
+          "playstyle_recomendado": "Target Man",
+          "dicas_taticas": [
+            "Abuse de bolas aéreas - é gol fácil",
+            "Use força física para proteger e girar",
+            "Finalizações de potência são melhores que finesse",
+            "Melhor jogada: recebe de costas, gira, power shot"
+          ]
+        }
+      },
+      "quando_usar": "Contra qualquer defesa. É o atacante mais completo do jogo. Use SEMPRE.",
+      "comentario_pro": "CR7 não tem fraqueza nessa versão. Se você tem ele, USE. Ponto final."
+    },
+    {
+      "jogador": "Lionel Messi",
+      "versao": "Creative Playmaker 2015",
+      "overall_base": 97,
+      "posicao_principal": "RWF",
+      "posicoes_alternativas": ["AMF", "CF"],
+      "por_que_e_meta": "Passe + drible + finesse shot = trio perfeito",
+      "build_especifica": {
+        "RWF": {
+          "distribuicao": [
+            {"atributo": "Dribbling", "pontos": 10, "justificativa": "Close control absurdo"},
+            {"atributo": "Curl", "pontos": 10, "justificativa": "Finesse shot nunca erra"},
+            {"atributo": "Ground Pass", "pontos": 9, "justificativa": "Assistências cirúrgicas"},
+            {"atributo": "Offensive Awareness", "pontos": 8, "justificativa": "Sempre no lugar certo"}
+          ],
+          "total_pontos": 37,
+          "playstyle_recomendado": "Creative Playmaker",
+          "dicas_taticas": [
+            "Corte para dentro SEMPRE - pé esquerdo dele é bug",
+            "Finesse shot de qualquer lugar dentro de 25m",
+            "Use passes curtos para triangular",
+            "Evite confronto físico - ele perde fácil"
+          ]
+        },
+        "AMF": {
+          "distribuicao": [
+            {"atributo": "Tight Possession", "pontos": 10, "justificativa": "Impossível tomar bola"},
+            {"atributo": "Ground Pass", "pontos": 10, "justificativa": "Orquestrador do jogo"},
+            {"atributo": "Curl", "pontos": 9, "justificativa": "Finalizações de fora"},
+            {"atributo": "Dribbling", "pontos": 8, "justificativa": "Sai da marcação fácil"}
+          ],
+          "total_pontos": 37,
+          "playstyle_recomendado": "Classic No. 10",
+          "dicas_taticas": [
+            "Fique entre as linhas recebendo",
+            "Passe + movimento é letal",
+            "Finalizações de fora da área são confiáveis",
+            "Melhor contra times que pressionam - ele acha espaço"
+          ]
+        }
+      },
+      "quando_usar": "Em qualquer situação. Se precisa criar, use ele. Se precisa finalizar, use ele.",
+      "comentario_pro": "Messi nessa versão é o jogador mais 'fácil' de usar bem. Até iniciante faz gol com ele."
+    },
+    {
+      "jogador": "Virgil van Dijk",
+      "versao": "Featured 2024",
+      "overall_base": 96,
+      "posicao_principal": "CB",
+      "posicoes_alternativas": [],
+      "por_que_e_meta": "Zagueiro que não toma drible + interceptação automática",
+      "build_especifica": {
+        "CB": {
+          "distribuicao": [
+            {"atributo": "Defensive Engagement", "pontos": 12, "justificativa": "Máximo possível - é o diferencial"},
+            {"atributo": "Physical Contact", "pontos": 10, "justificativa": "Ninguém passa por ele"},
+            {"atributo": "Speed", "pontos": 8, "justificativa": "Compensar lentidão base"},
+            {"atributo": "Tight Possession", "pontos": 7, "justificativa": "Sair jogando quando necessário"}
+          ],
+          "total_pontos": 37,
+          "playstyle_recomendado": "Build-up",
+          "dicas_taticas": [
+            "Deixe a IA controlar - ele intercepta sozinho",
+            "Use L2/LT para jockey, raramente desarme com ⭕",
+            "Em bola aérea, apenas posicione - ele ganha sozinho",
+            "Melhor zagueiro do jogo para pressão alta"
+          ]
+        }
+      },
+      "quando_usar": "SEMPRE. Não existe cenário onde ele não é útil. Melhor CB do jogo, ponto.",
+      "comentario_pro": "Van Dijk é broken. Literalmente intercepta bolas que outros zagueiros não alcançam. É física do jogo mesmo."
+    }
+  ],
+  "metadata": {
+    "versao": "1.0",
+    "atualizado_em": "2024-12-04",
+    "total_cartas": 4,
+    "fonte": "Pro Player Expert - Meta Atual",
+    "descricao": "Cartas que quebram as regras gerais e dominam o meta do jogo"
+  }
+}

@@ -1,0 +1,272 @@
+{
+  "regras_por_posicao": [
+    {
+      "posicao": "CB",
+      "nome_posicao": "Zagueiro Central",
+      "estilos": {
+        "Build-up": {
+          "descricao": "Zagueiro construtor, bom com a bola nos pés",
+          "prioridade_1": {
+            "atributo": "Defensive Engagement",
+            "minimo": 85,
+            "pontos_sugeridos": 10
+          },
+          "prioridade_2": {
+            "atributo": "Ground Pass",
+            "minimo": 75,
+            "pontos_sugeridos": 8
+          },
+          "prioridade_3": {
+            "atributo": "Speed",
+            "minimo": 70,
+            "pontos_sugeridos": 5
+          },
+          "ignorar": ["Finishing", "Curl", "Offensive Awareness"],
+          "dica_tatica": "Use para sair jogando com passes curtos. Evite lançamentos longos."
+        },
+        "Destroyer": {
+          "descricao": "Zagueiro destruidor, foca em desarme",
+          "prioridade_1": {
+            "atributo": "Defensive Engagement",
+            "minimo": 90,
+            "pontos_sugeridos": 12
+          },
+          "prioridade_2": {
+            "atributo": "Physical Contact",
+            "minimo": 85,
+            "pontos_sugeridos": 10
+          },
+          "prioridade_3": {
+            "atributo": "Tight Possession",
+            "minimo": 75,
+            "pontos_sugeridos": 6
+          },
+          "ignorar": ["Finishing", "Curl", "Offensive Awareness", "Ground Pass"],
+          "dica_tatica": "Pressione agressivamente. Use desarmes físicos."
+        }
+      }
+    },
+    {
+      "posicao": "LB/RB",
+      "nome_posicao": "Lateral",
+      "estilos": {
+        "Offensive Fullback": {
+          "descricao": "Lateral ofensivo que sobe muito",
+          "prioridade_1": {
+            "atributo": "Speed",
+            "minimo": 85,
+            "pontos_sugeridos": 10
+          },
+          "prioridade_2": {
+            "atributo": "Stamina",
+            "minimo": 85,
+            "pontos_sugeridos": 10
+          },
+          "prioridade_3": {
+            "atributo": "Ground Pass",
+            "minimo": 75,
+            "pontos_sugeridos": 7
+          },
+          "ignorar": ["Heading", "Finishing"],
+          "dica_tatica": "Participe do ataque. Use overlap para cruzamentos."
+        },
+        "Defensive Fullback": {
+          "descricao": "Lateral defensivo que fica atrás",
+          "prioridade_1": {
+            "atributo": "Defensive Engagement",
+            "minimo": 85,
+            "pontos_sugeridos": 10
+          },
+          "prioridade_2": {
+            "atributo": "Speed",
+            "minimo": 80,
+            "pontos_sugeridos": 8
+          },
+          "prioridade_3": {
+            "atributo": "Tight Possession",
+            "minimo": 75,
+            "pontos_sugeridos": 6
+          },
+          "ignorar": ["Finishing", "Curl", "Offensive Awareness"],
+          "dica_tatica": "Mantenha posição defensiva. Não suba sem necessidade."
+        }
+      }
+    },
+    {
+      "posicao": "DMF",
+      "nome_posicao": "Volante",
+      "estilos": {
+        "Anchor Man": {
+          "descricao": "Volante que fica parado na frente da zaga",
+          "prioridade_1": {
+            "atributo": "Defensive Engagement",
+            "minimo": 85,
+            "pontos_sugeridos": 10
+          },
+          "prioridade_2": {
+            "atributo": "Tight Possession",
+            "minimo": 80,
+            "pontos_sugeridos": 8
+          },
+          "prioridade_3": {
+            "atributo": "Physical Contact",
+            "minimo": 75,
+            "pontos_sugeridos": 6
+          },
+          "ignorar": ["Finishing", "Offensive Awareness"],
+          "dica_tatica": "Não avance. Proteja a área defensiva."
+        },
+        "Orchestrator": {
+          "descricao": "Volante criador de jogadas",
+          "prioridade_1": {
+            "atributo": "Ground Pass",
+            "minimo": 85,
+            "pontos_sugeridos": 10
+          },
+          "prioridade_2": {
+            "atributo": "Tight Possession",
+            "minimo": 85,
+            "pontos_sugeridos": 10
+          },
+          "prioridade_3": {
+            "atributo": "Lofted Pass",
+            "minimo": 80,
+            "pontos_sugeridos": 7
+          },
+          "ignorar": ["Finishing", "Physical Contact"],
+          "dica_tatica": "Distribua o jogo. Passe curto e longo precisos."
+        }
+      }
+    },
+    {
+      "posicao": "CMF",
+      "nome_posicao": "Meio-Campo Central",
+      "estilos": {
+        "Box-to-Box": {
+          "descricao": "Meio-campo completo que vai e volta",
+          "prioridade_1": {
+            "atributo": "Stamina",
+            "minimo": 90,
+            "pontos_sugeridos": 12
+          },
+          "prioridade_2": {
+            "atributo": "Ground Pass",
+            "minimo": 80,
+            "pontos_sugeridos": 8
+          },
+          "prioridade_3": {
+            "atributo": "Offensive Awareness",
+            "minimo": 75,
+            "pontos_sugeridos": 6
+          },
+          "ignorar": ["Heading"],
+          "dica_tatica": "Participe de ataque e defesa. Use a stamina."
+        }
+      }
+    },
+    {
+      "posicao": "AMF",
+      "nome_posicao": "Meia Atacante",
+      "estilos": {
+        "Classic No. 10": {
+          "descricao": "Meia clássico criador de jogadas",
+          "prioridade_1": {
+            "atributo": "Tight Possession",
+            "minimo": 85,
+            "pontos_sugeridos": 10
+          },
+          "prioridade_2": {
+            "atributo": "Ground Pass",
+            "minimo": 85,
+            "pontos_sugeridos": 10
+          },
+          "prioridade_3": {
+            "atributo": "Curl",
+            "minimo": 80,
+            "pontos_sugeridos": 8
+          },
+          "ignorar": ["Physical Contact", "Defensive Engagement"],
+          "dica_tatica": "Fique entre as linhas. Passe preciso e finalizações de fora."
+        }
+      }
+    },
+    {
+      "posicao": "LWF/RWF",
+      "nome_posicao": "Ponta",
+      "estilos": {
+        "Prolific Winger": {
+          "descricao": "Ponta que dribla e cruza",
+          "prioridade_1": {
+            "atributo": "Speed",
+            "minimo": 90,
+            "pontos_sugeridos": 12
+          },
+          "prioridade_2": {
+            "atributo": "Dribbling",
+            "minimo": 85,
+            "pontos_sugeridos": 10
+          },
+          "prioridade_3": {
+            "atributo": "Curl",
+            "minimo": 80,
+            "pontos_sugeridos": 8
+          },
+          "ignorar": ["Physical Contact", "Defensive Engagement"],
+          "dica_tatica": "Abuse do 1v1. Finesse shot cortando para dentro."
+        }
+      }
+    },
+    {
+      "posicao": "CF",
+      "nome_posicao": "Centroavante",
+      "estilos": {
+        "Goal Poacher": {
+          "descricao": "Atacante finalizador dentro da área",
+          "prioridade_1": {
+            "atributo": "Offensive Awareness",
+            "minimo": 90,
+            "pontos_sugeridos": 12
+          },
+          "prioridade_2": {
+            "atributo": "Finishing",
+            "minimo": 90,
+            "pontos_sugeridos": 12
+          },
+          "prioridade_3": {
+            "atributo": "Speed",
+            "minimo": 80,
+            "pontos_sugeridos": 8
+          },
+          "ignorar": ["Ground Pass", "Defensive Engagement"],
+          "dica_tatica": "Fique na área. Finalize rápido após receber."
+        },
+        "Target Man": {
+          "descricao": "Atacante pivô que segura a bola",
+          "prioridade_1": {
+            "atributo": "Physical Contact",
+            "minimo": 85,
+            "pontos_sugeridos": 10
+          },
+          "prioridade_2": {
+            "atributo": "Heading",
+            "minimo": 85,
+            "pontos_sugeridos": 10
+          },
+          "prioridade_3": {
+            "atributo": "Offensive Awareness",
+            "minimo": 85,
+            "pontos_sugeridos": 10
+          },
+          "ignorar": ["Speed", "Dribbling"],
+          "dica_tatica": "Jogue de costas. Proteja a bola e distribua."
+        }
+      }
+    }
+  ],
+  "metadata": {
+    "versao": "1.0",
+    "atualizado_em": "2024-12-04",
+    "fonte": "Pro Player Expert",
+    "descricao": "Regras gerais para builds automáticas baseadas em posição e estilo de jogo"
+  }
+}

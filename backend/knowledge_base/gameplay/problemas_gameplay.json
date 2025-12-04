@@ -1,0 +1,281 @@
+{
+  "problemas_gameplay": [
+    {
+      "id": 1,
+      "sintoma": "Tomo muito gol no kick-off (logo após fazer gol)",
+      "categoria": "Defesa",
+      "gravidade": "Crítica",
+      "causa_raiz": "Defesa desposicionada após comemoração + pressão alta automática do oponente",
+      "solucao": {
+        "passos": [
+          "1. Logo após fazer gol, PAUSE o jogo por 2 segundos mentalmente",
+          "2. No kick-off deles, NÃO pressione imediatamente",
+          "3. Segure L2/LT e recue seus jogadores para posição",
+          "4. Deixe eles avançarem até o meio-campo",
+          "5. SÓ pressione quando a defesa estiver organizada (5-7 segundos)"
+        ],
+        "comandos_especificos": "L2/LT (segurar) + Stick para trás = recuar linha defensiva",
+        "erro_comum": "Jogadores correm com R2/RT direto no atacante deles e deixam buracos",
+        "dica_extra": "Se possível, faça falta tática longe da área nos primeiros 10 segundos"
+      },
+      "video_referencia": null,
+      "dificuldade_execucao": "Fácil",
+      "efetividade": "95%"
+    },
+    {
+      "id": 2,
+      "sintoma": "Meu atacante erra gols cara a cara",
+      "categoria": "Finalização",
+      "gravidade": "Alta",
+      "causa_raiz": "Timing errado do chute + corrida durante finalização",
+      "solucao": {
+        "passos": [
+          "1. Quando entrar na área, SOLTE R2/RT (não corra)",
+          "2. Espere a bola encostar no pé do jogador",
+          "3. Mire primeiro (Stick esquerdo)",
+          "4. DEPOIS chute (⭕/B)",
+          "5. Não segure o botão de chute muito tempo (máx 50% da barra)"
+        ],
+        "comandos_especificos": "Soltar R2/RT → Mira → ⭕/B rápido",
+        "erro_comum": "Jogadores correm E chutam ao mesmo tempo = bola vai pra lua",
+        "dica_extra": "Em 1v1 com goleiro, finesse shot (R1+⭕) é mais confiável que power shot"
+      },
+      "video_referencia": null,
+      "dificuldade_execucao": "Média",
+      "efetividade": "90%"
+    },
+    {
+      "id": 3,
+      "sintoma": "Levo drible toda hora, não consigo defender 1v1",
+      "categoria": "Defesa",
+      "gravidade": "Alta",
+      "causa_raiz": "Jogador tenta desarme direto em vez de posicionar",
+      "solucao": {
+        "passos": [
+          "1. NÃO corra direto no atacante (erro #1 de iniciante)",
+          "2. Segure L2/LT = modo jockey (andar de lado)",
+          "3. Fique 2-3 metros de distância dele",
+          "4. Use Stick esquerdo para CORTAR o caminho que ele quer ir",
+          "5. Pressione ⭕/B para desarme APENAS quando:",
+          "   - Ele tocar pesado na bola (bola longe do pé)",
+          "   - Ele tentar girar",
+          "   - Você está do lado dele (não de frente)"
+        ],
+        "comandos_especificos": "L2/LT (segurar) + Stick cortando caminho + ⭕ só no timing",
+        "erro_comum": "Apertar ⭕ direto = você erra, ele passa fácil",
+        "dica_extra": "Use R1+X / RB+A para chamar segundo jogador ajudar na marcação"
+      },
+      "video_referencia": null,
+      "dificuldade_execucao": "Difícil",
+      "efetividade": "85%"
+    },
+    {
+      "id": 4,
+      "sintoma": "Não consigo driblar, sempre perco a bola",
+      "categoria": "Drible",
+      "gravidade": "Média",
+      "causa_raiz": "Tentar dribles complexos sem dominar o básico",
+      "solucao": {
+        "passos": [
+          "1. ESQUEÇA dribles complexos por enquanto",
+          "2. Aprenda apenas 1 drible: FAKE SHOT",
+          "   - Comando: ⭕ + X ao mesmo tempo (ou B + A)",
+          "   - Use quando defensor correr em você",
+          "3. Combine com mudança de direção:",
+          "   - Fake shot + Stick para o lado oposto",
+          "4. Outros dribles básicos:",
+          "   - R1 + Stick = toque rápido na bola",
+          "   - L1 + Stick = drible lento (protege bola)"
+        ],
+        "comandos_especificos": "⭕ + X juntos (timing é chave) → Stick diagonal",
+        "erro_comum": "Fazer drible parado = defensor te pega fácil. Faça em movimento.",
+        "dica_extra": "Fake shot funciona 90% das vezes até divisão alta. Domine esse primeiro."
+      },
+      "video_referencia": null,
+      "dificuldade_execucao": "Média",
+      "efetividade": "80%"
+    },
+    {
+      "id": 5,
+      "sintoma": "Meus passes sempre são interceptados",
+      "categoria": "Passes",
+      "gravidade": "Alta",
+      "causa_raiz": "Passar sem olhar posicionamento adversário",
+      "solucao": {
+        "passos": [
+          "1. ANTES de passar, olhe onde está o defensor",
+          "2. Passe para o pé OPOSTO do seu jogador (longe do marcador)",
+          "3. Use R1+X / RB+A para passes de primeira (mais rápidos)",
+          "4. Em pressão, use L1+X / LB+A para passe alto (mais seguro)",
+          "5. Evite passar para trás em velocidade - dê tempo pro jogador se virar"
+        ],
+        "comandos_especificos": "Olhar antes → X/A simples (ou R1+X se pressionado)",
+        "erro_comum": "Passar olhando só pro companheiro, não pro marcador dele",
+        "dica_extra": "Configure assistência de passe para 2 ou 3 (não use 1 se é iniciante)"
+      },
+      "video_referencia": null,
+      "dificuldade_execucao": "Fácil",
+      "efetividade": "90%"
+    },
+    {
+      "id": 6,
+      "sintoma": "Fico sem stamina no segundo tempo",
+      "categoria": "Gestão de Jogo",
+      "gravidade": "Média",
+      "causa_raiz": "Uso excessivo de sprint (R2/RT)",
+      "solucao": {
+        "passos": [
+          "1. PARE de usar R2/RT o tempo todo",
+          "2. Use sprint APENAS em:",
+          "   - Contra-ataque com espaço aberto",
+          "   - Corrida do defensor para alcançar atacante",
+          "   - Ponta em 1v1 pela linha",
+          "3. No meio-campo, NUNCA use sprint",
+          "4. Alterne seus jogadores (não use sempre os mesmos)",
+          "5. Configure táticas: Conserve Stamina se estiver vencendo"
+        ],
+        "comandos_especificos": "Jogue sem apertar R2/RT 80% do tempo",
+        "erro_comum": "Correr o tempo todo = morto aos 60 minutos",
+        "dica_extra": "Jogadores com -85 Stamina aguentam sprint mais vezes"
+      },
+      "video_referencia": null,
+      "dificuldade_execucao": "Fácil",
+      "efetividade": "100%"
+    },
+    {
+      "id": 7,
+      "sintoma": "Goleiro adversário defende tudo",
+      "categoria": "Finalização",
+      "gravidade": "Média",
+      "causa_raiz": "Chutes sempre no mesmo lugar (goleiro aprende)",
+      "solucao": {
+        "passos": [
+          "1. Varie o tipo de chute:",
+          "   - Finesse shot (R1+⭕): cantos superiores",
+          "   - Power shot (⭕ normal): cantos inferiores",
+          "   - Chute baixo (L1+⭕): rasteiro entre as pernas",
+          "2. Mude o ângulo ANTES de chutar:",
+          "   - Dê 1 toque para o lado",
+          "   - DEPOIS finalize",
+          "3. Não chute sempre pro mesmo canto",
+          "4. De fora da área: finesse shot SEMPRE"
+        ],
+        "comandos_especificos": "Alterne: R1+⭕ (finesse) e ⭕ puro (power) e L1+⭕ (baixo)",
+        "erro_comum": "Chutar sempre pro mesmo canto = goleiro vicia",
+        "dica_extra": "Após 2 finesse no canto direito, vá pro esquerdo no 3º"
+      },
+      "video_referencia": null,
+      "dificuldade_execucao": "Média",
+      "efetividade": "75%"
+    },
+    {
+      "id": 8,
+      "sintoma": "Não consigo sair jogando pela defesa",
+      "categoria": "Construção",
+      "gravidade": "Baixa",
+      "causa_raiz": "Pressão alta do oponente + passes errados",
+      "solucao": {
+        "passos": [
+          "1. No tiro de meta, passe CURTO pro zagueiro (X/A rápido)",
+          "2. Se oponente pressiona:",
+          "   - Passe de volta pro goleiro (ele não pode sofrer pressão)",
+          "   - Goleiro lança longo (△/Y) pro ponta",
+          "3. Use L1+△ / LB+Y para lançamento alto (mais seguro)",
+          "4. Não tenha medo de chutar pra lateral se pressionado",
+          "5. Configure tática: Short Pass se quer sair jogando"
+        ],
+        "comandos_especificos": "X pro zagueiro → Voltar pro goleiro se pressionado → △ longo",
+        "erro_comum": "Insistir em sair jogando mesmo sob pressão = gol tomado",
+        "dica_extra": "Zagueiros com +80 Ground Pass facilitam muito"
+      },
+      "video_referencia": null,
+      "dificuldade_execucao": "Média",
+      "efetividade": "80%"
+    },
+    {
+      "id": 9,
+      "sintoma": "Levo gol de cruzamento toda hora",
+      "categoria": "Defesa",
+      "gravidade": "Alta",
+      "causa_raiz": "Não marcar o atacante + posicionamento ruim",
+      "solucao": {
+        "passos": [
+          "1. Quando ver cruzamento vindo:",
+          "   - TROQUE para o zagueiro mais próximo do atacante (L1+Stick)",
+          "   - Não fique controlando o zagueiro longe",
+          "2. Posicione-se ENTRE o atacante e o gol",
+          "3. NÃO pule cedo (erro fatal)",
+          "4. Espere a bola chegar perto, DEPOIS △/Y",
+          "5. Se em dúvida, apenas posicione - às vezes IA cabeceia sozinha"
+        ],
+        "comandos_especificos": "L1+Stick (trocar) → Posicionar entre atacante/gol → △ no timing",
+        "erro_comum": "Pular muito cedo = atacante cabeceia livre",
+        "dica_extra": "Zagueiros com +85 Heading dominam bolas aéreas facilmente"
+      },
+      "video_referencia": null,
+      "dificuldade_execucao": "Difícil",
+      "efetividade": "70%"
+    },
+    {
+      "id": 10,
+      "sintoma": "Não consigo fazer contra-ataque rápido",
+      "categoria": "Ataque",
+      "gravidade": "Média",
+      "causa_raiz": "Demora para passar + atacantes não correm",
+      "solucao": {
+        "passos": [
+          "1. Recupera a bola → IMEDIATAMENTE △/Y (lançamento longo)",
+          "2. L1+△ / LB+Y se quiser bola alta (mais tempo pro atacante)",
+          "3. Antes de lançar, aperte L1/LB = atacantes correm",
+          "4. Não faça mais que 3 passes no contra-ataque",
+          "5. Se defesa voltar, PARE e construa (não force)"
+        ],
+        "comandos_especificos": "Recupera bola → L1/LB → △ rápido pro ponta",
+        "erro_comum": "Fazer passes curtos no contra = defesa volta e fecha tudo",
+        "dica_extra": "Pontas com +90 Speed são letais em contra. Use sempre."
+      },
+      "video_referencia": null,
+      "dificuldade_execucao": "Média",
+      "efetividade": "85%"
+    }
+  ],
+  "categorias": [
+    {
+      "nome": "Defesa",
+      "total_problemas": 4,
+      "icon": "🛡️"
+    },
+    {
+      "nome": "Finalização",
+      "total_problemas": 2,
+      "icon": "⚽"
+    },
+    {
+      "nome": "Drible",
+      "total_problemas": 1,
+      "icon": "🎯"
+    },
+    {
+      "nome": "Passes",
+      "total_problemas": 1,
+      "icon": "📍"
+    },
+    {
+      "nome": "Gestão de Jogo",
+      "total_problemas": 1,
+      "icon": "⏱️"
+    },
+    {
+      "nome": "Ataque",
+      "total_problemas": 1,
+      "icon": "⚡"
+    }
+  ],
+  "metadata": {
+    "versao": "1.0",
+    "atualizado_em": "2024-12-04",
+    "total_problemas": 10,
+    "fonte": "Pro Player Expert - Problemas Reais de Noobs",
+    "descricao": "Sintomas específicos com soluções práticas passo a passo"
+  }
+}
