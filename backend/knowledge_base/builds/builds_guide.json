@@ -1,0 +1,64 @@
+{
+  "players": [
+    {
+      "name": "Neymar Jr",
+      "positions": {
+        "CF": {
+          "priority_points": [
+            {"skill": "Offensive Awareness", "points": 10},
+            {"skill": "Finishing", "points": 10},
+            {"skill": "Speed", "points": 8},
+            {"skill": "Dribbling", "points": 7}
+          ],
+          "playstyle": "Goal Poacher",
+          "tips": "Use como 9 falso. Foque em finalizações rápidas e movimentação constante na área. Aproveite a alta agilidade para dribles curtos antes do chute."
+        },
+        "LWF": {
+          "priority_points": [
+            {"skill": "Dribbling", "points": 10},
+            {"skill": "Speed", "points": 10},
+            {"skill": "Curl", "points": 8},
+            {"skill": "Passing", "points": 7}
+          ],
+          "playstyle": "Prolific Winger",
+          "tips": "Abuse do drible 1v1 pela linha de fundo. Use finesse shots cortando para dentro. Perfeito para jogadas de velocidade."
+        }
+      }
+    },
+    {
+      "name": "Cristiano Ronaldo",
+      "positions": {
+        "CF": {
+          "priority_points": [
+            {"skill": "Offensive Awareness", "points": 10},
+            {"skill": "Finishing", "points": 10},
+            {"skill": "Header", "points": 9},
+            {"skill": "Physical Contact", "points": 8}
+          ],
+          "playstyle": "Target Man",
+          "tips": "Jogador completo para área. Domine bolas aéreas e finalizações de potência. Use força física para proteger a bola."
+        }
+      }
+    },
+    {
+      "name": "Lionel Messi",
+      "positions": {
+        "RWF": {
+          "priority_points": [
+            {"skill": "Dribbling", "points": 10},
+            {"skill": "Curl", "points": 10},
+            {"skill": "Passing", "points": 9},
+            {"skill": "Offensive Awareness", "points": 8}
+          ],
+          "playstyle": "Creative Playmaker",
+          "tips": "Corte para dentro e finalize com finesse. Use passes precisos para assistências. Evite confronto físico direto."
+        }
+      }
+    }
+  ],
+  "metadata": {
+    "last_updated": "2024-12-04",
+    "source": "Pro Player Expert",
+    "version": "1.0"
+  }
+}

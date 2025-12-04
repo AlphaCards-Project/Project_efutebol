@@ -1,0 +1,70 @@
+{
+  "faqs": [
+    {
+      "category": "Defesa",
+      "question": "Como defender bola aérea?",
+      "answer": "1. Não pule muito cedo - espere o momento exato\n2. Use L2/LT para posicionar seu defensor\n3. Troque para o zagueiro mais alto\n4. Pressione △ (ou Y) no momento certo\n5. Evite usar comandos múltiplos ao mesmo tempo",
+      "video_url": null
+    },
+    {
+      "category": "Defesa",
+      "question": "Como fazer pressão efetiva?",
+      "answer": "1. Use X/A para pressão automática\n2. Combine com L2/LT para jockey\n3. Não corra direto no atacante\n4. Mantenha distância de 2-3 metros\n5. Use segundo jogador (R1+X / RB+A) para fechar espaços",
+      "video_url": null
+    },
+    {
+      "category": "Ataque",
+      "question": "Como fazer finesse shot?",
+      "answer": "1. R1 + ⭕ (ou RB + B)\n2. Mire no canto oposto ao goleiro\n3. Use jogadores com Curl +85\n4. Melhor ângulo: 45° em relação ao gol\n5. Força: 60-70% da barra de chute",
+      "video_url": null
+    },
+    {
+      "category": "Ataque",
+      "question": "Como fazer um contra-ataque eficaz?",
+      "answer": "1. Recupere a bola e pressione △ (Y) rapidamente\n2. Lance para pontas rápidos\n3. Use R2/RT para sprint apenas em espaços abertos\n4. Faça 2-3 passes no máximo\n5. Finalize antes da defesa se posicionar",
+      "video_url": null
+    },
+    {
+      "category": "Passes",
+      "question": "Como fazer passe longo preciso?",
+      "answer": "1. Use △ (Y) e segure para ajustar força\n2. Mire com stick esquerdo\n3. Jogadores com +85 Lofted Pass são melhores\n4. Evite passes longos sob pressão\n5. Use manual passing para maior precisão",
+      "video_url": null
+    },
+    {
+      "category": "Passes",
+      "question": "Quando usar passe rasteiro vs. longo?",
+      "answer": "Passe Rasteiro (X/A):\n- Distâncias curtas/médias\n- Construção de jogada\n- Sob pressão defensiva\n\nPasse Longo (△/Y):\n- Mudanças de lado\n- Contra-ataques\n- Jogadores desmarcados longe",
+      "video_url": null
+    },
+    {
+      "category": "Finalizações",
+      "question": "Como aumentar precisão nos chutes?",
+      "answer": "1. Não corra ao finalizar (solte R2/RT)\n2. Use corpo do jogador corretamente (pé bom)\n3. Mire com antecedência\n4. Timing: chute quando bola estiver próxima\n5. Jogadores com +85 Finishing são cruciais",
+      "video_url": null
+    },
+    {
+      "category": "Táticas",
+      "question": "Melhor formação para iniciantes?",
+      "answer": "4-3-3 ou 4-2-3-1 são ideais:\n\n4-3-3:\n- Balanceado\n- Boas opções de passe\n- Fácil transição ataque/defesa\n\n4-2-3-1:\n- Controle de meio-campo\n- AMF criativo\n- Segurança defensiva",
+      "video_url": null
+    },
+    {
+      "category": "Táticas",
+      "question": "Como defender jogador rápido?",
+      "answer": "1. NÃO persiga diretamente\n2. Use L2/LT para se posicionar no caminho\n3. Mantenha distância e recue\n4. Corte ângulos de passe\n5. Use segundo defensor para ajudar\n6. Evite desarmes precipitados",
+      "video_url": null
+    },
+    {
+      "category": "Drible",
+      "question": "Quais dribles básicos devo dominar?",
+      "answer": "1. Fake Shot (⭕ + X): Melhor drible básico\n2. L1 + Stick: Drible lento/proteção\n3. R1 + Stick: Toque rápido\n4. Double Touch: Direção + Direção rápido\n5. Stop & Go: L2 + R2 juntos\n\nPratique no modo treino primeiro!",
+      "video_url": null
+    }
+  ],
+  "metadata": {
+    "last_updated": "2024-12-04",
+    "source": "Pro Player Expert",
+    "total_faqs": 10,
+    "version": "1.0"
+  }
+}
