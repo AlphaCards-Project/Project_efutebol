@@ -7,6 +7,7 @@ import os
 from groq import Groq
 from supabase import create_client, Client
 from dotenv import load_dotenv
+import uuid
 
 load_dotenv()
 
@@ -73,10 +74,11 @@ try:
     print("📊 Inserindo usuário de teste...")
     try:
         user_data = {
+            "id": str(uuid.uuid4()), # Generate a UUID for the test user
             "name": "Admin Teste",
             "nickname": "admin_test",
             "email": "admin@efootball.com",
-            "password_hash": "$2b$12$LQv3c1yqBWVHxkd0LHAkCOYz6TtxMQJqhN8/LewY5OwRy7z1dzjIm",  # senha: admin123
+            # "password_hash": "$2b$12$LQv3c1yqBWVHxkd0LHAkCOYz6TtxMQJqhN8/LewY5OwRy7z1dzjIm",  # removido: users é sincronizado com Supabase Auth
             "platform": "pc",
             "role": "admin"
         }
@@ -85,7 +87,7 @@ try:
         print(f"   ✅ Usuário inserido: {result.data[0]['email']}")
     except Exception as e:
         if "duplicate" in str(e).lower() or "unique" in str(e).lower():
-            print("   ℹ️  Usuário já existe")
+            print(f"   ℹ️  Usuário já existe: {e}")
         else:
             print(f"   ⚠️  Erro: {str(e)[:50]}...")
     
@@ -106,7 +108,7 @@ try:
         print(f"   ✅ Carta inserida: {result.data[0]['name']} (ID: {card_id})")
     except Exception as e:
         if "duplicate" in str(e).lower() or "unique" in str(e).lower():
-            print("   ℹ️  Carta já existe, buscando ID...")
+            print(f"   ℹ️  Carta já existe: {e}, buscando ID...")
             result = supabase.table('cards').select('id').eq('konami_id', 12345).execute()
             card_id = result.data[0]['id'] if result.data else 1
         else:
@@ -118,9 +120,14 @@ try:
     # ---------------------------------------------------------------------------
     print("📊 Inserindo build meta...")
     try:
-        # Buscar user_id
-        user_result = supabase.table('users').select('id').limit(1).execute()
-        user_id = user_result.data[0]['id'] if user_result.data else 1
+        
+        # Buscar user_id - prioriza o recém-inserido ou um existente
+        user_result = supabase.table('users').select('id').eq('email', 'admin@efootball.com').limit(1).execute()
+        user_id = user_result.data[0]['id'] if user_result.data else None
+        
+        if not user_id:
+            print("   ⚠️  Não foi possível obter um user_id válido para builds e dicas. Pulando...")
+            exit(1) # Exit the script early if no user_id is available
         
         build_data = {
             "user_id": user_id,

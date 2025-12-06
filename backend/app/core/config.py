@@ -14,8 +14,8 @@ class Settings(BaseSettings):
     SUPABASE_KEY: str
     SUPABASE_SERVICE_KEY: str
     
-    # Google Gemini
-    GOOGLE_API_KEY: str
+    # Groq AI
+    GROQ_API_KEY: str
     
     # Redis
     REDIS_HOST: str = "localhost"
@@ -40,7 +40,8 @@ class Settings(BaseSettings):
     
     class Config:
         env_file = ".env"
-        case_sensitive = True
+        case_sensitive = False
+        extra = "ignore"
 
 
 settings = Settings()

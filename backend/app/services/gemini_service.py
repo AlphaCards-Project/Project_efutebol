@@ -1,24 +1,25 @@
-import google.generativeai as genai
+from groq import Groq
 from app.core.config import settings
 from typing import Dict, Optional
 
 
 class GeminiService:
     def __init__(self):
-        genai.configure(api_key=settings.GOOGLE_API_KEY)
-        self.model = genai.GenerativeModel('gemini-1.5-flash')
+        self.client = Groq(api_key=settings.GROQ_API_KEY)
+        self.model = "llama-3.3-70b-versatile"
     
     async def generate_build_response(
-        self, 
-        player_name: str, 
+        self,
+        player_name: str,
         position: str,
         context: Optional[str] = None
     ) -> str:
         """
-        Gera resposta sobre build de carta usando Gemini
+        Gera resposta sobre build de carta usando Groq AI
         """
-        prompt = f"""Você é um especialista em eFootball que ajuda jogadores a montar builds de cartas.
-
+        system_prompt = "Você é um especialista em eFootball que ajuda jogadores a montar builds de cartas. Responda em português do Brasil, de forma clara e objetiva."
+        
+        user_prompt = f"""
 Jogador: {player_name}
 Posição: {position}
 
@@ -28,22 +29,29 @@ Forneça uma build detalhada com:
 1. Distribuição de pontos prioritários (habilidades principais)
 2. Playstyle recomendado
 3. Dicas táticas de como usar esse jogador
+"""
 
-Responda em português do Brasil, de forma clara e objetiva."""
-
-        response = self.model.generate_content(prompt)
-        return response.text
+        completion = self.client.chat.completions.create(
+            messages=[
+                {"role": "system", "content": system_prompt},
+                {"role": "user", "content": user_prompt}
+            ],
+            model=self.model,
+            temperature=0.7,
+        )
+        return completion.choices[0].message.content
     
     async def generate_gameplay_response(
-        self, 
+        self,
         question: str,
         context: Optional[str] = None
     ) -> str:
         """
-        Gera resposta sobre gameplay usando Gemini
+        Gera resposta sobre gameplay usando Groq AI
         """
-        prompt = f"""Você é um coach profissional de eFootball que ajuda jogadores a melhorarem seu gameplay.
-
+        system_prompt = "Você é um coach profissional de eFootball que ajuda jogadores a melhorarem seu gameplay. Responda em português do Brasil."
+        
+        user_prompt = f"""
 Pergunta do jogador: {question}
 
 {f"Dicas do Pro Player:\n{context}\n" if context else ""}
@@ -53,16 +61,29 @@ Forneça uma resposta:
 2. Com passos práticos
 3. Incluindo comandos específicos (botões do controle)
 4. Dicas extras se aplicável
+"""
 
-Responda em português do Brasil."""
-
-        response = self.model.generate_content(prompt)
-        return response.text
+        completion = self.client.chat.completions.create(
+            messages=[
+                {"role": "system", "content": system_prompt},
+                {"role": "user", "content": user_prompt}
+            ],
+            model=self.model,
+            temperature=0.7,
+        )
+        return completion.choices[0].message.content
     
     async def simple_query(self, prompt: str) -> str:
-        """Query genérica ao Gemini"""
-        response = self.model.generate_content(prompt)
-        return response.text
+        """Query genérica ao Groq"""
+        completion = self.client.chat.completions.create(
+            messages=[
+                {"role": "user", "content": prompt}
+            ],
+            model=self.model,
+            temperature=0.7,
+        )
+        return completion.choices[0].message.content
 
 
+# Mantendo o nome da instância para compatibilidade com o resto do código
 gemini_service = GeminiService()
