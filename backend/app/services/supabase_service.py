@@ -9,7 +9,14 @@ class SupabaseService:
     def __init__(self):
         self.client: Client = create_client(settings.SUPABASE_URL, settings.SUPABASE_KEY)
     
-    async def create_user(self, email: str, password: str, full_name: Optional[str] = None) -> Dict:
+    async def create_user(
+        self, 
+        email: str, 
+        password: str, 
+        full_name: Optional[str] = None, 
+        nickname: Optional[str] = None,
+        platform: Optional[str] = None
+    ) -> Dict:
         """Cria um novo usuário"""
         # Criar no Supabase Auth
         auth_response = self.client.auth.sign_up({
@@ -18,20 +25,35 @@ class SupabaseService:
         })
         
         if auth_response.user:
-            # Criar perfil adicional na tabela users
+            # Criar perfil adicional na tabela users (UUID sincronizado)
             user_data = {
-                "id": auth_response.user.id,
+                "id": str(auth_response.user.id),
                 "email": email,
-                "full_name": full_name,
+                "name": full_name,
+                "nickname": nickname,
+                "platform": platform,
+                "role": "free",
                 "is_premium": False,
                 "daily_questions_used": 0,
-                "last_reset": datetime.utcnow().isoformat()
+                "last_reset": datetime.utcnow().isoformat(),
+                "created_at": datetime.utcnow().isoformat()
             }
             
             self.client.table("users").insert(user_data).execute()
-            return user_data
+            
+            return {
+                "id": str(auth_response.user.id),
+                "email": email,
+                "name": full_name,
+                "nickname": nickname,
+                "platform": platform,
+                "role": "free",
+                "is_premium": False,
+                "daily_questions_used": 0,
+                "created_at": user_data["created_at"]
+            }
         
-        raise Exception("Erro ao criar usuário")
+        raise Exception("Erro ao criar usuário no Supabase Auth")
     
     async def authenticate_user(self, email: str, password: str) -> Optional[Dict]:
         """Autentica usuário"""
