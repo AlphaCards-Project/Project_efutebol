@@ -74,6 +74,11 @@ function Registro() {
 
   return (
     <div className="registro-container">
+      <button className="btn-back" onClick={() => navigate('/')} title="Voltar">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+          <path d="M19 12H5M12 19l-7-7 7-7" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+        </svg>
+      </button>
       <div className="registro-box">
         <div className="registro-header">
           <div className="registro-logo">

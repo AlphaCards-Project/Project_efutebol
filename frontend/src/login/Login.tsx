@@ -53,6 +53,11 @@ function Login() {
 
   return (
     <div className="login-container">
+      <button className="btn-back" onClick={() => navigate('/')} title="Voltar">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+          <path d="M19 12H5M12 19l-7-7 7-7" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+        </svg>
+      </button>
       <div className="login-box">
         <div className="login-header">
           <div className="login-logo">
