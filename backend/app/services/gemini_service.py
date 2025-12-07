@@ -19,11 +19,13 @@ class GeminiService:
         """
         system_prompt = "Você é um especialista em eFootball que ajuda jogadores a montar builds de cartas. Responda em português do Brasil, de forma clara e objetiva."
         
+        newline = "\n"
+        context_text = f"Contexto adicional do Pro Player:{newline}{context}{newline}" if context else ""
         user_prompt = f"""
 Jogador: {player_name}
 Posição: {position}
 
-{f"Contexto adicional do Pro Player:\n{context}\n" if context else ""}
+{context_text}
 
 Forneça uma build detalhada com:
 1. Distribuição de pontos prioritários (habilidades principais)
@@ -51,10 +53,11 @@ Forneça uma build detalhada com:
         """
         system_prompt = "Você é um coach profissional de eFootball que ajuda jogadores a melhorarem seu gameplay. Responda em português do Brasil."
         
+        context_text = f"Dicas do Pro Player:\n{context}\n" if context else ""
         user_prompt = f"""
 Pergunta do jogador: {question}
 
-{f"Dicas do Pro Player:\n{context}\n" if context else ""}
+{context_text}
 
 Forneça uma resposta:
 1. Clara e objetiva
