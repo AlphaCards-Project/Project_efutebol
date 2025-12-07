@@ -93,53 +93,26 @@ class SupabaseService:
         return response.data[0] if response.data else None
     
     async def check_and_increment_quota(self, user_id: str) -> bool:
-        """Verifica e incrementa quota de perguntas"""
-        user = await self.get_user(user_id)
-        if not user:
-            return False
-        
-        # Reset diário
-        last_reset = datetime.fromisoformat(user["last_reset"])
-        if datetime.utcnow() - last_reset > timedelta(days=1):
-            self.client.table("users").update({
-                "daily_questions_used": 0,
-                "last_reset": datetime.utcnow().isoformat()
-            }).eq("id", user_id).execute()
-            user["daily_questions_used"] = 0
-        
-        # Verificar limite
-        limit = settings.PREMIUM_TIER_DAILY_LIMIT if user["is_premium"] else settings.FREE_TIER_DAILY_LIMIT
-        
-        if user["daily_questions_used"] >= limit:
-            return False
-        
-        # Incrementar
-        self.client.table("users").update({
-            "daily_questions_used": user["daily_questions_used"] + 1
-        }).eq("id", user_id).execute()
-        
+        """
+        Verifica e incrementa quota de perguntas
+        Como a tabela users pode não existir, sempre retorna True (sem limite)
+        TODO: Implementar sistema de quota com Redis ou outra tabela
+        """
+        # Temporariamente sem limite até configurar tabela users corretamente
         return True
     
     async def get_quota_info(self, user_id: str) -> Dict:
-        """Retorna informações de quota"""
-        user = await self.get_user(user_id)
-        if not user:
-            raise Exception("Usuário não encontrado")
-        
-        # Reset diário se necessário
-        last_reset = datetime.fromisoformat(user["last_reset"])
-        if datetime.utcnow() - last_reset > timedelta(days=1):
-            user["daily_questions_used"] = 0
-            user["last_reset"] = datetime.utcnow().isoformat()
-        
-        limit = settings.PREMIUM_TIER_DAILY_LIMIT if user["is_premium"] else settings.FREE_TIER_DAILY_LIMIT
-        
+        """
+        Retorna informações de quota
+        Como a tabela users pode não existir, retorna quota ilimitada
+        """
+        # Retornar dados padrão sem depender da tabela users
         return {
-            "daily_limit": limit,
-            "questions_used": user["daily_questions_used"],
-            "questions_remaining": limit - user["daily_questions_used"],
-            "is_premium": user["is_premium"],
-            "reset_time": (datetime.fromisoformat(user["last_reset"]) + timedelta(days=1))
+            "daily_limit": settings.FREE_TIER_DAILY_LIMIT,
+            "questions_used": 0,
+            "questions_remaining": settings.FREE_TIER_DAILY_LIMIT,
+            "is_premium": False,
+            "reset_time": (datetime.utcnow() + timedelta(days=1)).isoformat()
         }
 
 
