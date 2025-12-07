@@ -1,6 +1,6 @@
 # 🚀 Guia Rápido - eFootball Coach API
 
-## 📝 Resumo do Projeto
+## 📝 Resumo do Projetoo
 
 Sistema de consultoria inteligente para jogadores de eFootball que responde perguntas sobre:
 - **Builds de Cartas**: Distribuição de pontos de habilidade
