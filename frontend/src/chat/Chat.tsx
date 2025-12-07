@@ -6,6 +6,15 @@ function Chat() {
   const navigate = useNavigate()
   const [message, setMessage] = useState('')
   const [messages, setMessages] = useState<Array<{ text: string; isUser: boolean }>>([])
+  const [sidebarOpen, setSidebarOpen] = useState(false)
+  const [sidebarCollapsed, setSidebarCollapsed] = useState(false)
+  const [chats] = useState([
+    'New chat',
+    'Como posso melhorar meus passes no efutebool?',
+    'Qual a melhor formação para atacar?',
+    'Como defender melhor?',
+    'Melhor maneira de trocar a seta?',
+  ])
 
   const handleSendMessage = () => {
     if (message.trim()) {
@@ -24,22 +33,111 @@ function Chat() {
 
   return (
     <div className="chat-container">
+      {/* Sidebar */}
+      <aside className={`sidebar ${sidebarOpen ? 'open' : ''} ${sidebarCollapsed ? 'collapsed' : ''}`}>
+        <div className="sidebar-header">
+          <div className="sidebar-logo">
+            <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+              <circle cx="12" cy="12" r="10" strokeWidth="2"/>
+              <path d="M12 2a10 10 0 0 1 0 20" strokeWidth="2"/>
+            </svg>
+          </div>
+          <button className="sidebar-toggle" onClick={() => setSidebarCollapsed(!sidebarCollapsed)} title={sidebarCollapsed ? 'Expandir' : 'Ocultar'}>
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+              <rect x="3" y="3" width="18" height="18" rx="2" ry="2" strokeWidth="2"/>
+              <line x1="9" y1="3" x2="9" y2="21" strokeWidth="2"/>
+            </svg>
+          </button>
+        </div>
+
+        <nav className="sidebar-nav">
+          <button className="sidebar-item">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+              <path d="M12 20h9" strokeWidth="2" strokeLinecap="round"/>
+              <path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z" strokeWidth="2"/>
+            </svg>
+            <span>Novo chat</span>
+          </button>
+          
+          <button className="sidebar-item">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+              <circle cx="11" cy="11" r="8" strokeWidth="2"/>
+              <path d="m21 21-4.35-4.35" strokeWidth="2" strokeLinecap="round"/>
+            </svg>
+            <span>Buscar em chats</span>
+          </button>
+
+          <button className="sidebar-item">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+              <rect x="3" y="3" width="18" height="18" rx="2" ry="2" strokeWidth="2"/>
+              <circle cx="8.5" cy="8.5" r="1.5" fill="currentColor"/>
+              <path d="m21 15-5-5L5 21" strokeWidth="2" strokeLinecap="round"/>
+            </svg>
+            <span>Galeria</span>
+          </button>
+
+          <button className="sidebar-item">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+              <circle cx="12" cy="12" r="10" strokeWidth="2"/>
+              <path d="M12 2a10 10 0 0 1 0 20" strokeWidth="2"/>
+            </svg>
+            <span>Sobre nós</span>
+          </button>
+
+          <button className="sidebar-item">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+              <path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z" strokeWidth="2"/>
+            </svg>
+            <span>Projetos</span>
+          </button>
+        </nav>
+
+        <div className="sidebar-divider">
+          <span>Seus chats</span>
+        </div>
+
+        <div className="sidebar-chats">
+          {chats.map((chat, index) => (
+            <button key={index} className="chat-item">
+              {chat}
+            </button>
+          ))}
+        </div>
+
+        <div className="sidebar-footer">
+          <div className="user-profile">
+            <div className="user-avatar">D</div>
+            <div className="user-info">
+              <span className="user-name">Darlan</span>
+              <span className="user-plan">Grátis</span>
+            </div>
+          </div>
+          <button className="btn-upgrade">Fazer upgrade</button>
+        </div>
+      </aside>
+
+      {/* Overlay */}
+      {sidebarOpen && <div className="sidebar-overlay" onClick={() => setSidebarOpen(false)}></div>}
+
+      <div className={`main-content ${sidebarCollapsed ? 'expanded' : ''}`}>
       <header className="chat-header">
+        <button className="menu-toggle" onClick={() => setSidebarOpen(true)}>
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+            <line x1="3" y1="12" x2="21" y2="12" strokeWidth="2" strokeLinecap="round"/>
+            <line x1="3" y1="6" x2="21" y2="6" strokeWidth="2" strokeLinecap="round"/>
+            <line x1="3" y1="18" x2="21" y2="18" strokeWidth="2" strokeLinecap="round"/>
+          </svg>
+        </button>
         <div className="chat-logo">
           <span className="logo-icon">⚽</span>
           <span className="logo-text">Efutebool</span>
         </div>
         <nav className="chat-nav">
-          <a href="#sobre">Sobre</a>
-          <a href="#recursos">Recursos</a>
-          <a href="#aprenda">Aprenda</a>
-          <a href="#business">Business</a>
-          <a href="#precos">Preços</a>
-          <a href="#baixar">Baixar</a>
+
         </nav>
         <div className="chat-auth">
-          <button className="btn-entrar" onClick={() => navigate('/login')}>Entrar</button>
-          <button className="btn-cadastrar" onClick={() => navigate('/registro')}>Cadastre-se gratuitamente</button>
+          <button className="btn-entrar" onClick={() => navigate('/login')}>Login</button>
+          <button className="btn-cadastrar" onClick={() => navigate('/registro')}>Register</button>
         </div>
       </header>
 
@@ -117,6 +215,7 @@ function Chat() {
           <a href="#preferencias">Preferências de cookies</a>.
         </footer>
       </main>
+      </div>
     </div>
   )
 }
