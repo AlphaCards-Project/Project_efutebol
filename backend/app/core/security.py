@@ -54,3 +54,24 @@ async def get_current_user(credentials: HTTPAuthorizationCredentials = Depends(s
         )
     
     return {"user_id": user_id, "email": payload.get("email"), "is_premium": payload.get("is_premium", False)}
+
+
+async def get_current_user_optional(credentials: Optional[HTTPAuthorizationCredentials] = Depends(HTTPBearer(auto_error=False))) -> Optional[dict]:
+    """
+    Retorna dados do usuário se tiver token válido, senão retorna None
+    Permite usar endpoint sem login
+    """
+    if not credentials:
+        return None
+    
+    try:
+        token = credentials.credentials
+        payload = decode_token(token)
+        user_id: str = payload.get("sub")
+        
+        if user_id is None:
+            return None
+        
+        return {"user_id": user_id, "email": payload.get("email"), "is_premium": payload.get("is_premium", False)}
+    except:
+        return None

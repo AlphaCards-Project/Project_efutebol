@@ -3,10 +3,12 @@ uvicorn[standard]==0.24.0
 pydantic==2.5.0
 pydantic-settings==2.1.0
 python-dotenv==1.0.0
+email-validator==2.3.0
 
 # Database
-supabase==2.3.0
+supabase==2.10.0
 sqlalchemy==2.0.23
+websockets>=15.0
 
 # AI (Groq substituindo Google)
 groq==0.4.2

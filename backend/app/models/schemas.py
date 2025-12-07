@@ -12,7 +12,7 @@ class UserRegister(BaseModel):
     platform: Optional[str] = Field(None, description="Plataforma: console, pc ou mobile")
     
     class Config:
-        schema_extra = {
+        json_schema_extra = {
             "example": {
                 "email": "usuario@exemplo.com",
                 "password": "senha123",
@@ -28,7 +28,7 @@ class UserLogin(BaseModel):
     password: str
     
     class Config:
-        schema_extra = {
+        json_schema_extra = {
             "example": {
                 "email": "usuario@exemplo.com",
                 "password": "senha123"
@@ -48,7 +48,7 @@ class UserResponse(BaseModel):
     created_at: datetime
     
     class Config:
-        schema_extra = {
+        json_schema_extra = {
             "example": {
                 "id": "550e8400-e29b-41d4-a716-446655440000",
                 "email": "usuario@exemplo.com",
@@ -69,7 +69,7 @@ class Token(BaseModel):
     user: UserResponse
     
     class Config:
-        schema_extra = {
+        json_schema_extra = {
             "example": {
                 "access_token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...",
                 "token_type": "bearer",
@@ -152,7 +152,7 @@ class BuildCreate(BaseModel):
     meta_content: Optional[Dict] = Field(None, description="Conteúdo adicional (dicas, playstyle, etc)")
     
     class Config:
-        schema_extra = {
+        json_schema_extra = {
             "example": {
                 "card_id": 1,
                 "title": "Meta CF - Goal Poacher",
@@ -216,7 +216,7 @@ class BuildResponseDB(BaseModel):
     updated_at: datetime
     
     class Config:
-        schema_extra = {
+        json_schema_extra = {
             "example": {
                 "id": 1,
                 "user_id": "550e8400-e29b-41d4-a716-446655440000",
