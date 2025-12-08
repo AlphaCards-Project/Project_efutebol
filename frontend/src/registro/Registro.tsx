@@ -141,8 +141,8 @@ function Registro() {
               required
             >
               <option value="PC">PC</option>
-              <option value="PlayStation">PlayStation</option>
-              <option value="Xbox">Xbox</option>
+              <option value="PlayStation">Console</option>
+              <option value="Mobile">Mobile</option>
             </select>
           </div>
 

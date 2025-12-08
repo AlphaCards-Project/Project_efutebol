@@ -120,6 +120,14 @@ function Chat() {
         </div>
 
         <nav className="sidebar-nav">
+          <button className="sidebar-item" onClick={() => navigate('/dashboard')}>
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+              <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+              <circle cx="12" cy="7" r="4" strokeWidth="2"/>
+            </svg>
+            <span>Administrador</span>
+          </button>
+
           <button className="sidebar-item">
             <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor">
               <path d="M12 20h9" strokeWidth="2" strokeLinecap="round"/>
