@@ -1,5 +1,5 @@
 from fastapi import APIRouter, HTTPException, Depends, status
-from app.models.schemas import QuotaResponse, UserResponse, MessageResponse
+from Project_efutebol.backend.app.schemas import QuotaResponse, UserResponse, MessageResponse
 from app.services.supabase_service import supabase_service
 from app.core.security import get_current_user
 
