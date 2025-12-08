@@ -37,16 +37,39 @@ function Profile() {
 
   const loadProfile = async () => {
     try {
-      // Simulando carregamento do perfil - substituir pela chamada real da API
-      const mockData: UserProfile = {
-        email: 'usuario@email.com',
-        full_name: 'Usuário Exemplo',
-        nickname: 'Player123',
-        platform: 'PC',
-        is_premium: false
+      const token = localStorage.getItem('token')
+      if (!token) {
+        navigate('/login')
+        return
       }
-      setProfileData(mockData)
-      setEditData(mockData)
+
+      const response = await fetch('http://localhost:8000/api/v1/users/me', {
+        headers: {
+          'Authorization': `Bearer ${token}`,
+          'Content-Type': 'application/json'
+        }
+      })
+
+      if (!response.ok) {
+        if (response.status === 401) {
+          localStorage.removeItem('token')
+          navigate('/login')
+          return
+        }
+        throw new Error('Erro ao carregar perfil')
+      }
+
+      const userData = await response.json()
+      const mappedData: UserProfile = {
+        email: userData.email,
+        full_name: userData.name || '',
+        nickname: userData.nickname || '',
+        platform: userData.platform || '',
+        is_premium: userData.is_premium
+      }
+      
+      setProfileData(mappedData)
+      setEditData(mappedData)
     } catch (err) {
       setError('Erro ao carregar perfil')
     }
@@ -65,19 +88,46 @@ function Profile() {
     setSuccess('')
 
     try {
-      // Aqui você fará a chamada para a API para atualizar o perfil
-      // await apiService.updateProfile(editData)
+      const token = localStorage.getItem('token')
+      if (!token) {
+        navigate('/login')
+        return
+      }
+
+      const response = await fetch('http://localhost:8000/api/v1/users/me', {
+        method: 'PUT',
+        headers: {
+          'Authorization': `Bearer ${token}`,
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+          full_name: editData.full_name,
+          nickname: editData.nickname,
+          platform: editData.platform
+        })
+      })
+
+      if (!response.ok) {
+        const errorData = await response.json()
+        throw new Error(errorData.detail || 'Erro ao atualizar perfil')
+      }
+
+      const updatedUser = await response.json()
+      const mappedData: UserProfile = {
+        email: updatedUser.email,
+        full_name: updatedUser.name || '',
+        nickname: updatedUser.nickname || '',
+        platform: updatedUser.platform || '',
+        is_premium: updatedUser.is_premium
+      }
       
-      // Simulando salvamento
-      await new Promise(resolve => setTimeout(resolve, 1000))
-      
-      setProfileData(editData)
+      setProfileData(mappedData)
       setIsEditing(false)
       setSuccess('Perfil atualizado com sucesso!')
       
       setTimeout(() => setSuccess(''), 3000)
-    } catch (err) {
-      setError('Erro ao atualizar perfil')
+    } catch (err: any) {
+      setError(err.message || 'Erro ao atualizar perfil')
     } finally {
       setLoading(false)
     }

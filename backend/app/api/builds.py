@@ -1,6 +1,6 @@
 from fastapi import APIRouter, HTTPException, Depends, status
 from typing import List
-from Project_efutebol.backend.app.schemas import (
+from app.schemas import (
     BuildQuery, BuildResponse, MessageResponse,
     BuildCreate, BuildUpdate, BuildResponseDB
 )

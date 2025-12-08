@@ -112,3 +112,25 @@ class AICache(Base):
     response_text = Column(Text, nullable=False)
     created_at = Column(DateTime(timezone=True), server_default=func.now())
     expires_at = Column(DateTime(timezone=True), nullable=True)
+
+class UserActivity(Base):
+    __tablename__ = "user_activities"
+
+    id = Column(Integer, primary_key=True, index=True)
+    user_id = Column(UUID(as_uuid=True), ForeignKey("users.id"), nullable=False, index=True)
+    activity_type = Column(String, nullable=False, index=True)
+    activity_data = Column(JSON, nullable=True)
+    created_at = Column(DateTime(timezone=True), server_default=func.now(), index=True)
+
+class UserStats(Base):
+    __tablename__ = "user_stats"
+
+    id = Column(Integer, primary_key=True, index=True)
+    user_id = Column(UUID(as_uuid=True), ForeignKey("users.id"), nullable=False, unique=True, index=True)
+    total_questions = Column(Integer, default=0)
+    builds_consulted = Column(Integer, default=0)
+    gameplay_questions = Column(Integer, default=0)
+    favorite_position = Column(String, nullable=True)
+    most_searched_player = Column(String, nullable=True)
+    last_active = Column(DateTime(timezone=True), server_default=func.now())
+    updated_at = Column(DateTime(timezone=True), server_default=func.now(), onupdate=func.now())

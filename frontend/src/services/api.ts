@@ -76,12 +76,50 @@ class ApiService {
   }
 
   async getCurrentUser(): Promise<LoginResponse['user']> {
-    const response = await fetch(`${API_BASE_URL}/api/v1/auth/me`, {
+    const response = await fetch(`${API_BASE_URL}/api/v1/users/me`, {
       headers: this.getAuthHeaders()
     })
 
     if (!response.ok) {
       throw new Error('Erro ao buscar dados do usuário')
+    }
+
+    return response.json()
+  }
+
+  async updateUserProfile(data: {
+    full_name?: string
+    nickname?: string
+    platform?: string
+  }): Promise<LoginResponse['user']> {
+    const response = await fetch(`${API_BASE_URL}/api/v1/users/me`, {
+      method: 'PUT',
+      headers: this.getAuthHeaders(),
+      body: JSON.stringify(data)
+    })
+
+    if (!response.ok) {
+      const error = await response.json()
+      throw new Error(error.detail || 'Erro ao atualizar perfil')
+    }
+
+    return response.json()
+  }
+
+  async getUserStats(): Promise<{
+    total_questions: number
+    builds_consulted: number
+    gameplay_questions: number
+    favorite_position?: string
+    most_searched_player?: string
+    last_active: string
+  }> {
+    const response = await fetch(`${API_BASE_URL}/api/v1/users/stats`, {
+      headers: this.getAuthHeaders()
+    })
+
+    if (!response.ok) {
+      throw new Error('Erro ao buscar estatísticas')
     }
 
     return response.json()

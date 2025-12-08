@@ -1,6 +1,6 @@
 from fastapi import APIRouter, HTTPException, Depends, status, Request
 from typing import Optional
-from Project_efutebol.backend.app.schemas import GameplayQuery, GameplayResponse, MessageResponse
+from app.schemas import GameplayQuery, GameplayResponse, MessageResponse
 from app.services.gemini_service import gemini_service
 from app.services.rag_service import rag_service
 from app.services.cache_service import cache_service

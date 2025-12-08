@@ -36,6 +36,21 @@ class UserLogin(BaseModel):
         }
 
 
+class UserUpdate(BaseModel):
+    full_name: Optional[str] = Field(None, max_length=100)
+    nickname: Optional[str] = Field(None, max_length=50)
+    platform: Optional[str] = Field(None)
+
+    class Config:
+        json_schema_extra = {
+            "example": {
+                "full_name": "João Silva",
+                "nickname": "joaogamer",
+                "platform": "console"
+            }
+        }
+
+
 class UserResponse(BaseModel):
     id: str
     email: str
@@ -131,6 +146,28 @@ class QuotaResponse(BaseModel):
 class MessageResponse(BaseModel):
     message: str
     detail: Optional[str] = None
+
+
+# Dashboard Stats Schemas
+class UserStatsResponse(BaseModel):
+    total_questions: int
+    builds_consulted: int
+    gameplay_questions: int
+    favorite_position: Optional[str]
+    most_searched_player: Optional[str]
+    last_active: datetime
+
+    class Config:
+        json_schema_extra = {
+            "example": {
+                "total_questions": 45,
+                "builds_consulted": 23,
+                "gameplay_questions": 22,
+                "favorite_position": "CF",
+                "most_searched_player": "Messi",
+                "last_active": "2024-01-01T00:00:00"
+            }
+        }
 
 
 # Build Create Schemas (para adicionar builds pelo frontend)
