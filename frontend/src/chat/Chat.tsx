@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom'
 import './Chat.css'
 import { apiService } from '../services/api'
 import type { GameplayResponse, QuotaResponse } from '../services/api'
+import { userService, type UserData } from '../services/userService'
 
 function Chat() {
   const navigate = useNavigate()
@@ -13,7 +14,7 @@ function Chat() {
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState('')
   const [quota, setQuota] = useState<QuotaResponse | null>(null)
-  const [user, setUser] = useState<{ name?: string; is_premium: boolean } | null>(null)
+  const [user, setUser] = useState<UserData | null>(null)
   const [chats] = useState([
     'New chat',
     'Como posso melhorar meus passes no efutebool?',
@@ -23,18 +24,40 @@ function Chat() {
   ])
 
   useEffect(() => {
+    // Carregar dados do userService
+    setUser(userService.getUserData())
+    
+    // Inscrever-se para mudanças
+    const unsubscribe = userService.subscribe((userData) => {
+      setUser(userData)
+    })
+
     if (apiService.isAuthenticated()) {
       loadUserData()
       loadQuota()
     }
+
+    return () => unsubscribe()
   }, [])
 
   const loadUserData = async () => {
     try {
       const userData = await apiService.getCurrentUser()
-      setUser({ name: userData.name, is_premium: userData.is_premium })
+      const mappedUser: UserData = {
+        email: userData.email || 'usuario@email.com',
+        full_name: userData.name || 'Administrador',
+        nickname: userData.nickname || 'Admin',
+        platform: userData.platform || 'PC',
+        is_premium: userData.is_premium || true,
+        avatar_url: ''
+      }
+      userService.setUserData(mappedUser)
+      setUser(mappedUser)
+      console.log('Dados do usuário carregados:', userData)
     } catch (err) {
       console.error('Erro ao carregar dados do usuário:', err)
+      // Usar dados padrão do userService
+      setUser(userService.getUserData())
     }
   }
 
@@ -128,6 +151,14 @@ function Chat() {
             <span>Administrador</span>
           </button>
 
+          <button className="sidebar-item" onClick={() => navigate('/user/settings')}>
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+              <circle cx="12" cy="12" r="3" strokeWidth="2"/>
+              <path d="M12 1v6m0 6v6M5.64 5.64l4.24 4.24m4.24 4.24l4.24 4.24M1 12h6m6 0h6M5.64 18.36l4.24-4.24m4.24-4.24l4.24-4.24" strokeWidth="2"/>
+            </svg>
+            <span>Configurações</span>
+          </button>
+
           <button className="sidebar-item">
             <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor">
               <path d="M12 20h9" strokeWidth="2" strokeLinecap="round"/>
@@ -182,27 +213,34 @@ function Chat() {
         </div>
 
         <div className="sidebar-footer">
-          {user && (
-            <>
-              <div className="user-profile">
-                <div className="user-avatar">{user.name?.[0]?.toUpperCase() || 'U'}</div>
-                <div className="user-info">
-                  <span className="user-name">{user.name || 'Usuário'}</span>
-                  <span className="user-plan">{user.is_premium ? 'Premium' : 'Grátis'}</span>
+          {apiService.isAuthenticated() && (
+            <div className="user-profile-card">
+              <div className="user-profile-header">
+                <div className="user-avatar-gold">
+                  {user?.full_name?.[0]?.toUpperCase() || 'A'}
                 </div>
-              </div>
-              {quota && !user.is_premium && (
-                <div className="quota-info">
-                  <span className="quota-text">
-                    {quota.questions_remaining}/{quota.daily_limit} perguntas restantes
+                <div className="user-profile-info">
+                  <span className="user-name-large">
+                    {user?.full_name || 'Administrador'}
                   </span>
+                  <span className="user-plan-badge">{user?.is_premium ? 'PRO' : 'Grátis'}</span>
                 </div>
-              )}
-              {!user.is_premium && (
-                <button className="btn-upgrade">Fazer upgrade</button>
-              )}
-              <button className="btn-logout" onClick={handleLogout}>Sair</button>
-            </>
+                <button 
+                  className="btn-edit-profile" 
+                  onClick={() => navigate('/user/settings')}
+                  title="Editar Perfil"
+                >
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                    <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7" strokeWidth="2"/>
+                    <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z" strokeWidth="2"/>
+                  </svg>
+                </button>
+              </div>
+              
+              <button className="btn-upgrade-footer" onClick={() => navigate('/user/settings')}>
+                Fazer upgrade
+              </button>
+            </div>
           )}
         </div>
       </aside>

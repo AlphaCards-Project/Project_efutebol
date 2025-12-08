@@ -1,10 +1,7 @@
 import { LineChart, Line, BarChart, Bar, PieChart, Pie, Cell, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Legend } from 'recharts'
-import { useNavigate } from 'react-router-dom'
 import './Dashboard.css'
 
 function Dashboard() {
-  const navigate = useNavigate()
-  
   // Dados para os gráficos
   const barData = [
     { name: 'Jan', value: 12 },
