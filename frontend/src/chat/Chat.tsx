@@ -237,9 +237,11 @@ function Chat() {
                 </button>
               </div>
               
-              <button className="btn-upgrade-footer" onClick={() => navigate('/user/settings')}>
-                Fazer upgrade
-              </button>
+              {!user?.is_premium && (
+                <button className="btn-upgrade-footer" onClick={() => navigate('/user/settings')}>
+                  Fazer upgrade
+                </button>
+              )}
             </div>
           )}
         </div>
@@ -286,10 +288,11 @@ function Chat() {
           
           {messages.length === 0 ? (
             <div className="chat-welcome">
-              <h1 className="welcome-title">Como posso ajudar?</h1>
-              {quota && (
+              <h1 className="welcome-title">Seu Treinador de IA está online!</h1>
+              <p className="welcome-subtitle">Estou aqui para te ajudar a evoluir no eFootball. Vamos treinar e alcançar seus objetivos juntos!</p>
+              {(!apiService.isAuthenticated() || (user && !user.is_premium)) && (
                 <p className="welcome-quota">
-                  Você tem {quota.questions_remaining} perguntas restantes hoje
+                  Treinamento diário: Você ainda tem <span className="quota-highlight">{quota?.questions_remaining ?? 5}</span> análises disponíveis.
                 </p>
               )}
             </div>
@@ -318,7 +321,7 @@ function Chat() {
           <div className="chat-input-wrapper">
             <textarea
               className="chat-input"
-              placeholder={loading ? "Aguarde a resposta..." : "Pergunte algo sobre eFootball..."}
+              placeholder={loading ? "Aguarde a resposta..." : "Pergunte: \"Qual a melhor formação para contra-ataque?\""}
               value={message}
               onChange={(e) => setMessage(e.target.value)}
               onKeyPress={handleKeyPress}

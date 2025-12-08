@@ -1,10 +1,10 @@
 import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import './Builds.css'
+import { buildService } from '../../services/buildService'
 
 interface BuildFormData {
   title: string
-  card_id: string
   platform: string
   shooting: string
   passing: string
@@ -17,15 +17,12 @@ interface BuildFormData {
   gk_2: string
   gk_3: string
   overall_rating: string
-  is_official_meta: boolean
-  meta_content: string
 }
 
 function Builds() {
   const navigate = useNavigate()
   const [formData, setFormData] = useState<BuildFormData>({
     title: '',
-    card_id: '',
     platform: '',
     shooting: '',
     passing: '',
@@ -37,9 +34,7 @@ function Builds() {
     gk_1: '',
     gk_2: '',
     gk_3: '',
-    overall_rating: '',
-    is_official_meta: false,
-    meta_content: '{}'
+    overall_rating: ''
   })
 
   const [errors, setErrors] = useState<Record<string, string>>({})
@@ -64,20 +59,7 @@ function Builds() {
     const newErrors: Record<string, string> = {}
 
     if (!formData.title.trim()) {
-      newErrors.title = 'Título é obrigatório'
-    }
-
-    if (!formData.card_id.trim()) {
-      newErrors.card_id = 'ID do card é obrigatório'
-    }
-
-    // Validar JSON
-    if (formData.meta_content) {
-      try {
-        JSON.parse(formData.meta_content)
-      } catch {
-        newErrors.meta_content = 'JSON inválido'
-      }
+      newErrors.title = 'Nome do Jogador é obrigatório'
     }
 
     setErrors(newErrors)
@@ -87,23 +69,86 @@ function Builds() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
     setSuccess(false)
+    setErrors({})
+
+    console.log('=== INICIANDO SUBMISSÃO ===')
+    console.log('Form Data:', formData)
 
     if (!validateForm()) {
+      console.log('Validação falhou:', errors)
       return
     }
 
     try {
-      // Aqui você fará a integração com a API
-      console.log('Build Data:', formData)
+      console.log('=== CRIANDO BUILD ===')
       
-      // Simular sucesso
+      // Criar build usando o buildService
+      const buildData = {
+        title: formData.title,
+        card_id: Date.now().toString(),
+        platform: formData.platform || 'PC',
+        shooting: parseInt(formData.shooting) || 0,
+        passing: parseInt(formData.passing) || 0,
+        dribbling: parseInt(formData.dribbling) || 0,
+        dexterity: parseInt(formData.dexterity) || 0,
+        lower_body_strength: parseInt(formData.lower_body_strength) || 0,
+        aerial_strength: parseInt(formData.aerial_strength) || 0,
+        defending: parseInt(formData.defending) || 0,
+        gk_1: parseInt(formData.gk_1) || 0,
+        gk_2: parseInt(formData.gk_2) || 0,
+        gk_3: parseInt(formData.gk_3) || 0,
+        overall_rating: parseInt(formData.overall_rating) || buildService.calculateOverall({
+          shooting: parseInt(formData.shooting) || 0,
+          passing: parseInt(formData.passing) || 0,
+          dribbling: parseInt(formData.dribbling) || 0,
+          dexterity: parseInt(formData.dexterity) || 0,
+          lower_body_strength: parseInt(formData.lower_body_strength) || 0,
+          aerial_strength: parseInt(formData.aerial_strength) || 0,
+          defending: parseInt(formData.defending) || 0
+        }),
+        is_official_meta: false,
+        meta_content: '{}'
+      }
+
+      console.log('Build Data preparada:', buildData)
+      
+      const createdBuild = buildService.createBuild(buildData)
+      console.log('Build criada com sucesso:', createdBuild)
+      
+      const allBuilds = buildService.getBuilds()
+      console.log('Total de builds após criar:', allBuilds.length)
+      console.log('Todas as builds:', allBuilds)
+      
       setSuccess(true)
+      alert('✅ Build criada com sucesso! Total de builds: ' + allBuilds.length)
+      
+      // Resetar formulário
+      setFormData({
+        title: '',
+        platform: '',
+        shooting: '',
+        passing: '',
+        dribbling: '',
+        dexterity: '',
+        lower_body_strength: '',
+        aerial_strength: '',
+        defending: '',
+        gk_1: '',
+        gk_2: '',
+        gk_3: '',
+        overall_rating: ''
+      })
+
+      console.log('=== REDIRECIONANDO PARA CATÁLOGO ===')
+      // Redirecionar para o catálogo imediatamente
       setTimeout(() => {
-        setSuccess(false)
-      }, 3000)
+        navigate('/dashboard/catalog')
+      }, 1000)
 
     } catch (error) {
-      console.error('Erro ao salvar build:', error)
+      console.error('=== ERRO AO SALVAR BUILD ===', error)
+      alert('❌ Erro ao salvar build: ' + error)
+      setErrors({ submit: 'Erro ao salvar build. Tente novamente.' })
     }
   }
 
@@ -116,7 +161,13 @@ function Builds() {
 
       {success && (
         <div className="success-message">
-          ✅ Build salva com sucesso!
+          ✅ Build salva com sucesso! Redirecionando para o catálogo...
+        </div>
+      )}
+
+      {errors.submit && (
+        <div className="error-message">
+          ❌ {errors.submit}
         </div>
       )}
 
@@ -324,37 +375,6 @@ function Builds() {
               />
               {errors.gk_3 && <span className="error-text">{errors.gk_3}</span>}
             </div>
-          </div>
-        </div>
-
-        {/* Meta Config */}
-        <div className="form-section">
-          <h3 className="section-title">Configuração Meta</h3>
-          
-          <div className="form-group checkbox-group">
-            <label className="checkbox-label">
-              <input
-                type="checkbox"
-                name="is_official_meta"
-                checked={formData.is_official_meta}
-                onChange={handleChange}
-              />
-              <span>Build Oficial Meta</span>
-            </label>
-          </div>
-
-          <div className="form-group">
-            <label htmlFor="meta_content">Meta Content (JSON)</label>
-            <textarea
-              id="meta_content"
-              name="meta_content"
-              value={formData.meta_content}
-              onChange={handleChange}
-              rows={6}
-              placeholder='{"tactics": "4-3-3", "style": "Possession"}'
-              className={errors.meta_content ? 'error' : ''}
-            />
-            {errors.meta_content && <span className="error-text">{errors.meta_content}</span>}
           </div>
         </div>
 

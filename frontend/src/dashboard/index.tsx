@@ -1,7 +1,23 @@
+import { useState, useEffect } from 'react'
 import { LineChart, Line, BarChart, Bar, PieChart, Pie, Cell, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Legend } from 'recharts'
 import './Dashboard.css'
+import { buildService } from '../services/buildService'
 
 function Dashboard() {
+  const [buildsCount, setBuildsCount] = useState(0)
+
+  useEffect(() => {
+    // Carregar contagem de builds
+    const builds = buildService.getBuilds()
+    setBuildsCount(builds.length)
+
+    // Inscrever-se para mudanças
+    const unsubscribe = buildService.subscribe((updatedBuilds) => {
+      setBuildsCount(updatedBuilds.length)
+    })
+
+    return () => unsubscribe()
+  }, [])
   // Dados para os gráficos
   const barData = [
     { name: 'Jan', value: 12 },
@@ -64,7 +80,7 @@ function Dashboard() {
         <div className="stat-card">
           <div className="stat-icon">⚙️</div>
           <div className="stat-info">
-            <h3 className="stat-value">98</h3>
+            <h3 className="stat-value">{buildsCount}</h3>
             <p className="stat-label">Builds Criadas</p>
           </div>
         </div>

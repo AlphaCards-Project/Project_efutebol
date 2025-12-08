@@ -32,6 +32,17 @@
   font-size: 0.95rem;
 }
 
+/* Error Message */
+.error-message {
+  background-color: rgba(239, 68, 68, 0.1);
+  border: 1px solid rgba(239, 68, 68, 0.3);
+  color: #f87171;
+  padding: 1rem 1.5rem;
+  border-radius: 8px;
+  margin-bottom: 2rem;
+  font-size: 0.95rem;
+}
+
 /* Form */
 .builds-form {
   background-color: #0a0a0a;
