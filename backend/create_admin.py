@@ -12,15 +12,31 @@ from getpass import getpass
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 
 from app.services.supabase_service import supabase_service
-from datetime import datetime
+from datetime import datetime, timezone
 
 
-def create_admin_profile():
-    """Cria um perfil de administrador no banco"""
+def create_user_profile():
+    """Cria um perfil de usuário no banco"""
     print("=" * 50)
-    print("🔐 CRIAR PERFIL DE ADMINISTRADOR")
+    print("🔐 CRIAR PERFIL DE USUÁRIO")
     print("=" * 50)
     print()
+
+    print("Qual tipo de conta deseja criar?")
+    print("1. Admin (acesso total)")
+    print("2. Free (usuário gratuito)")
+    print("3. Premium (usuário pago)")
+    role_choice = input("Escolha (1-3, padrão=1): ").strip() or "1"
+    
+    role_map = {
+        "1": "admin",
+        "2": "free",
+        "3": "premium"
+    }
+    role = role_map.get(role_choice, "admin")
+    is_premium = role in ["admin", "premium"]
+
+    print(f"\nCriando conta do tipo: {role.upper()}\n")
     
     # Coletar informações
     email = input("📧 Email: ").strip()
@@ -42,31 +58,17 @@ def create_admin_profile():
     nickname = input("🎮 Nickname (opcional): ").strip() or None
     
     print("\n🎯 Plataforma:")
-    print("1. PlayStation")
-    print("2. Xbox")
-    print("3. PC")
+    print("1. Console (PlayStation/Xbox)")
+    print("2. PC")
+    print("3. Mobile")
     platform_choice = input("Escolha (1-3, Enter para pular): ").strip()
     
     platform_map = {
-        "1": "PlayStation",
-        "2": "Xbox", 
-        "3": "PC"
+        "1": "console",
+        "2": "pc", 
+        "3": "mobile"
     }
     platform = platform_map.get(platform_choice)
-    
-    print("\n👑 Tipo de conta:")
-    print("1. Admin (acesso total)")
-    print("2. Premium (usuário premium)")
-    print("3. Free (usuário gratuito)")
-    role_choice = input("Escolha (1-3, padrão=1): ").strip() or "1"
-    
-    role_map = {
-        "1": "admin",
-        "2": "premium",
-        "3": "free"
-    }
-    role = role_map.get(role_choice, "admin")
-    is_premium = role in ["admin", "premium"]
     
     print("\n" + "=" * 50)
     print("📋 RESUMO")
@@ -85,22 +87,49 @@ def create_admin_profile():
     
     print("\n⏳ Criando usuário no Supabase Auth...")
     
+    auth_user = None
+    
     try:
-        # Criar usuário no Supabase Auth
-        auth_response = supabase_service.client.auth.sign_up({
-            "email": email,
-            "password": password
-        })
+        try:
+            # Tentar criar usuário
+            auth_response = supabase_service.client.auth.sign_up({
+                "email": email,
+                "password": password,
+                "options": {
+                    "data": {
+                        "full_name": full_name,
+                        "nickname": nickname,
+                        "platform": platform
+                    }
+                }
+            })
+            auth_user = auth_response.user
+        except Exception as e:
+            if "already registered" in str(e) or "already exists" in str(e):
+                print("⚠️  Usuário já existe no Auth. Tentando login para recuperar ID...")
+                try:
+                    auth_response = supabase_service.client.auth.sign_in_with_password({
+                        "email": email,
+                        "password": password
+                    })
+                    auth_user = auth_response.user
+                    print("✅ Login realizado com sucesso! Prosseguindo com criação do perfil...")
+                except Exception as login_error:
+                    print(f"❌ Falha ao logar com o usuário existente: {login_error}")
+                    print("   Certifique-se de usar a senha correta se o usuário já existe.")
+                    return
+            else:
+                raise e
         
-        if not auth_response.user:
-            print("❌ Erro ao criar usuário no Auth!")
+        if not auth_user:
+            print("❌ Erro ao criar ou autenticar usuário no Auth!")
             return
         
-        user_id = str(auth_response.user.id)
-        print(f"✅ Usuário criado no Auth! ID: {user_id}")
+        user_id = str(auth_user.id)
+        print(f"✅ ID do Usuário: {user_id}")
         
         # Criar perfil na tabela users
-        print("⏳ Criando perfil na tabela users...")
+        print("⏳ Criando/Atualizando perfil na tabela users...")
         
         user_data = {
             "id": user_id,
@@ -111,14 +140,18 @@ def create_admin_profile():
             "role": role,
             "is_premium": is_premium,
             "daily_questions_used": 0,
-            "last_reset": datetime.utcnow().isoformat(),
-            "created_at": datetime.utcnow().isoformat()
+            "last_reset": datetime.now(timezone.utc).isoformat(),
+            "created_at": datetime.now(timezone.utc).isoformat()
         }
         
-        result = supabase_service.client.table("users").insert(user_data).execute()
-        
-        if result.data:
+        # Tentar inserir no banco
+        try:
+            result = supabase_service.client.table("users").insert(user_data).execute()
             print("✅ Perfil criado com sucesso!")
+        except Exception as e:
+            print(f"❌ Erro ao inserir na tabela users: {e}")
+            print("⚠️  Se o erro for falta de colunas, o banco de dados precisa ser atualizado.")
+            return
             
             # Criar estatísticas iniciais
             print("⏳ Criando estatísticas iniciais...")
@@ -127,7 +160,7 @@ def create_admin_profile():
                 "total_questions": 0,
                 "builds_consulted": 0,
                 "gameplay_questions": 0,
-                "last_active": datetime.utcnow().isoformat()
+                "last_active": datetime.now(timezone.utc).isoformat()
             }
             
             try:
@@ -161,7 +194,7 @@ def create_admin_profile():
 
 if __name__ == "__main__":
     try:
-        create_admin_profile()
+        create_user_profile()
     except KeyboardInterrupt:
         print("\n\n❌ Operação cancelada pelo usuário!")
     except Exception as e:

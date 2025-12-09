@@ -1,9 +1,15 @@
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker, declarative_base
+import os
+from dotenv import load_dotenv
 
-# COLOCAR AQUI A URL DO SUPABASE (Use o driver postgresql padrão, não o async para o Alembic não chiar agora)
-# Ex: postgresql://postgres:suasenha@db.supabase.co:5432/postgres
-SQLALCHEMY_DATABASE_URL = "postgresql://postgres:Fr33D0m_4_AllC0nFiD3nc3@db.egydaqgczfhrpqejnhtp.supabase.co:5432/postgres"
+load_dotenv()
+
+# Obter URL do banco de dados do ambiente
+SQLALCHEMY_DATABASE_URL = os.getenv("DATABASE_URL")
+
+if not SQLALCHEMY_DATABASE_URL:
+    raise ValueError("DATABASE_URL não encontrada no arquivo .env!")
 
 # Cria a conexão    
 engine = create_engine(SQLALCHEMY_DATABASE_URL)

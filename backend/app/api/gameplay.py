@@ -81,7 +81,7 @@ async def ask_gameplay_question(
         response_data = {
             "question": query.question,
             "answer": ai_response,
-            "category": "Davi",
+            "category": "Coach IA",
             "video_url": None,
             "from_cache": False
         }

@@ -1,4 +1,5 @@
-from sqlalchemy import Column, Integer, String, Boolean, ForeignKey, DateTime, JSON, Text, Enum
+from sqlalchemy import Column, Integer, String, Boolean, ForeignKey, DateTime, Text, Enum
+from sqlalchemy.dialects.postgresql import JSONB
 from sqlalchemy.dialects.postgresql import UUID
 from sqlalchemy.orm import relationship
 from sqlalchemy.sql import func
@@ -21,7 +22,6 @@ class User(Base):
     id = Column(UUID(as_uuid=True), primary_key=True, index=True)
     email = Column(String, unique=True, index=True, nullable=False)
     name = Column(String, nullable=True)
-    nickname = Column(String, unique=True, nullable=True)
     platform = Column(Enum(UserPlatform), nullable=True)
     role = Column(Enum(UserRole), default=UserRole.free, nullable=False)
     is_premium = Column(Boolean, default=False)
@@ -38,8 +38,6 @@ class Player(Base):
 
     id = Column(Integer, primary_key=True, index=True)
     name = Column(String, nullable=False, index=True)
-    konami_player_id = Column(Integer, unique=True, index=True)
-    real_position = Column(String, nullable=True)
     nationality = Column(String, nullable=True)
     created_at = Column(DateTime(timezone=True), server_default=func.now())
     updated_at = Column(DateTime(timezone=True), server_default=func.now(), onupdate=func.now())
@@ -51,13 +49,12 @@ class Card(Base):
 
     id = Column(Integer, primary_key=True, index=True)
     player_id = Column(Integer, ForeignKey("players.id"))
-    konami_id = Column(Integer, unique=True, index=True)
     name = Column(String, nullable=False)
     version = Column(String, nullable=True)
     card_type = Column(String, nullable=True)
     position = Column(String, nullable=True)
     overall_rating = Column(Integer, nullable=True)
-    stats_base = Column(JSON, nullable=True)
+    stats_base = Column(JSONB, nullable=True)
     created_at = Column(DateTime(timezone=True), server_default=func.now())
     updated_at = Column(DateTime(timezone=True), server_default=func.now(), onupdate=func.now())
 
@@ -83,7 +80,7 @@ class Build(Base):
     gk_3 = Column(Integer, default=0)
     overall_rating = Column(Integer, nullable=True)
     is_official_meta = Column(Boolean, default=False)
-    meta_content = Column(JSON, nullable=True)
+    meta_content = Column(JSONB, nullable=True)
     created_at = Column(DateTime(timezone=True), server_default=func.now())
     updated_at = Column(DateTime(timezone=True), server_default=func.now(), onupdate=func.now())
 
@@ -119,7 +116,7 @@ class UserActivity(Base):
     id = Column(Integer, primary_key=True, index=True)
     user_id = Column(UUID(as_uuid=True), ForeignKey("users.id"), nullable=False, index=True)
     activity_type = Column(String, nullable=False, index=True)
-    activity_data = Column(JSON, nullable=True)
+    activity_data = Column(JSONB, nullable=True)
     created_at = Column(DateTime(timezone=True), server_default=func.now(), index=True)
 
 class UserStats(Base):

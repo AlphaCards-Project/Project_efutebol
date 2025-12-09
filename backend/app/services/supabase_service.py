@@ -1,5 +1,5 @@
 from supabase import create_client, Client
-from datetime import datetime, timedelta
+from datetime import datetime, timezone, timedelta
 from app.core.config import settings
 from app.core.security import get_password_hash, verify_password
 from typing import Optional, Dict
@@ -19,10 +19,17 @@ class SupabaseService:
     ) -> Dict:
         """Cria um novo usuário"""
         try:
-            # Criar no Supabase Auth
+            # Criar no Supabase Auth com metadata
             auth_response = self.client.auth.sign_up({
                 "email": email,
-                "password": password
+                "password": password,
+                "options": {
+                    "data": {
+                        "full_name": full_name,
+                        "nickname": nickname,
+                        "platform": platform
+                    }
+                }
             })
             
             if auth_response.user:
@@ -36,11 +43,35 @@ class SupabaseService:
                     "role": "free",
                     "is_premium": False,
                     "daily_questions_used": 0,
-                    "last_reset": datetime.utcnow().isoformat(),
-                    "created_at": datetime.utcnow().isoformat()
+                    "last_reset": datetime.now(timezone.utc).isoformat(),
+                    "created_at": datetime.now(timezone.utc).isoformat()
                 }
                 
-                self.client.table("users").insert(user_data).execute()
+                try:
+                    self.client.table("users").insert(user_data).execute()
+                except Exception as e:
+                    error_msg = str(e).lower()
+                    if "could not find the 'platform' column" in error_msg:
+                        print("⚠️  Coluna 'platform' não encontrada. Tentando inserir sem ela...")
+                        user_data.pop("platform", None)
+                        # Se platform não existe, pode ser que nickname também não exista?
+                        # Vamos tentar remover platform primeiro.
+                        try:
+                            self.client.table("users").insert(user_data).execute()
+                        except Exception as e2:
+                             # Se falhar de novo, tenta remover nickname também
+                             if "could not find the 'nickname' column" in str(e2).lower():
+                                 print("⚠️  Coluna 'nickname' não encontrada. Tentando inserir sem ela...")
+                                 user_data.pop("nickname", None)
+                                 self.client.table("users").insert(user_data).execute()
+                             else:
+                                 raise e2
+                    elif "could not find the 'nickname' column" in error_msg:
+                         print("⚠️  Coluna 'nickname' não encontrada. Tentando inserir sem ela...")
+                         user_data.pop("nickname", None)
+                         self.client.table("users").insert(user_data).execute()
+                    else:
+                        raise e
                 
                 return {
                     "id": str(auth_response.user.id),
@@ -78,7 +109,7 @@ class SupabaseService:
                     "role": "free",
                     "is_premium": False,
                     "daily_questions_used": 0,
-                    "created_at": str(auth_response.user.created_at) if auth_response.user.created_at else str(datetime.utcnow())
+                    "created_at": str(auth_response.user.created_at) if auth_response.user.created_at else str(datetime.now(timezone.utc))
                 }
             
             return None
@@ -112,7 +143,7 @@ class SupabaseService:
             "questions_used": 0,
             "questions_remaining": settings.FREE_TIER_DAILY_LIMIT,
             "is_premium": False,
-            "reset_time": (datetime.utcnow() + timedelta(days=1)).isoformat()
+            "reset_time": (datetime.now(timezone.utc) + timedelta(days=1)).isoformat()
         }
 
 
