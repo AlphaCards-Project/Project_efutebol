@@ -1,12 +1,39 @@
 from fastapi import APIRouter, HTTPException, Depends, status
 from sqlalchemy.orm import Session
-from app.schemas import QuotaResponse, UserResponse, MessageResponse, UserUpdate, UserStatsResponse
+from app.schemas import QuotaResponse, UserResponse, MessageResponse, UserUpdate, UserStatsResponse, UserRegister
 from app.services.supabase_service import supabase_service
 from app.core.security import get_current_user
 from app.database import get_db
 from app.models import User, UserStats
 
 router = APIRouter(prefix="/users", tags=["Users"])
+
+
+@router.post("/", response_model=UserResponse, status_code=status.HTTP_201_CREATED)
+async def create_user(user_in: UserRegister):
+    """
+    Registra um novo usuário
+    """
+    try:
+        user = await supabase_service.create_user(
+            email=user_in.email,
+            password=user_in.password,
+            full_name=user_in.full_name,
+            nickname=user_in.nickname,
+            platform=user_in.platform
+        )
+        return UserResponse(**user)
+    except Exception as e:
+        error_msg = str(e)
+        if "already exists" in error_msg or "duplicate" in error_msg:
+            raise HTTPException(
+                status_code=status.HTTP_409_CONFLICT,
+                detail="Email já cadastrado"
+            )
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail=f"Erro ao criar usuário: {error_msg}"
+        )
 
 
 @router.get("/quota", response_model=QuotaResponse)
