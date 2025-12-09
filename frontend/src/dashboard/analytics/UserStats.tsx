@@ -67,35 +67,45 @@ function UserStats() {
       <div className="stats-grid">
         <div className="stat-card">
           <div className="stat-icon">❓</div>
-          <div className="stat-value">{stats.total_questions}</div>
-          <div className="stat-label">Perguntas Totais</div>
+          <div className="stat-info">
+            <div className="stat-value">{stats.total_questions}</div>
+            <div className="stat-label">Perguntas Totais</div>
+          </div>
         </div>
 
         <div className="stat-card">
           <div className="stat-icon">⚽</div>
-          <div className="stat-value">{stats.builds_consulted}</div>
-          <div className="stat-label">Builds Consultadas</div>
+          <div className="stat-info">
+            <div className="stat-value">{stats.builds_consulted}</div>
+            <div className="stat-label">Builds Consultadas</div>
+          </div>
         </div>
 
         <div className="stat-card">
           <div className="stat-icon">🎮</div>
-          <div className="stat-value">{stats.gameplay_questions}</div>
-          <div className="stat-label">Dicas de Gameplay</div>
+          <div className="stat-info">
+            <div className="stat-value">{stats.gameplay_questions}</div>
+            <div className="stat-label">Dicas de Gameplay</div>
+          </div>
         </div>
 
         {stats.favorite_position && (
           <div className="stat-card">
             <div className="stat-icon">🎯</div>
-            <div className="stat-value">{stats.favorite_position}</div>
-            <div className="stat-label">Posição Favorita</div>
+            <div className="stat-info">
+              <div className="stat-value">{stats.favorite_position}</div>
+              <div className="stat-label">Posição Favorita</div>
+            </div>
           </div>
         )}
 
         {stats.most_searched_player && (
           <div className="stat-card">
             <div className="stat-icon">⭐</div>
-            <div className="stat-value">{stats.most_searched_player}</div>
-            <div className="stat-label">Jogador Mais Buscado</div>
+            <div className="stat-info">
+              <div className="stat-value">{stats.most_searched_player}</div>
+              <div className="stat-label">Jogador Mais Buscado</div>
+            </div>
           </div>
         )}
       </div>
