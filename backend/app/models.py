@@ -54,9 +54,9 @@ class Card(Base):
     card_type = Column(String, nullable=True)
     position = Column(String, nullable=True)
     overall_rating = Column(Integer, nullable=True)
-    stats_base = Column(JSONB, nullable=True)
     created_at = Column(DateTime(timezone=True), server_default=func.now())
     updated_at = Column(DateTime(timezone=True), server_default=func.now(), onupdate=func.now())
+    image_url = Column(String, nullable=True)
 
     player = relationship("Player", back_populates="cards")
     builds = relationship("Build", back_populates="card")

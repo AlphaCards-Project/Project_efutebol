@@ -279,3 +279,103 @@ class BuildResponseDB(BaseModel):
                 "updated_at": "2024-01-01T00:00:00"
             }
         }
+
+
+# Player Schemas
+class PlayerCreate(BaseModel):
+    name: str = Field(..., min_length=2, max_length=100, description="Nome do jogador")
+    nationality: Optional[str] = Field(None, max_length=50, description="Nacionalidade do jogador")
+    
+    class Config:
+        json_schema_extra = {
+            "example": {
+                "name": "Lionel Messi",
+                "nationality": "Argentina"
+            }
+        }
+
+
+class PlayerUpdate(BaseModel):
+    name: Optional[str] = Field(None, min_length=2, max_length=100)
+    nationality: Optional[str] = Field(None, max_length=50)
+
+
+class PlayerResponse(BaseModel):
+    id: int
+    name: str
+    nationality: Optional[str]
+    created_at: datetime
+    updated_at: datetime
+    
+    class Config:
+        json_schema_extra = {
+            "example": {
+                "id": 1,
+                "name": "Lionel Messi",
+                "nationality": "Argentina",
+                "created_at": "2024-01-01T00:00:00",
+                "updated_at": "2024-01-01T00:00:00"
+            }
+        }
+
+
+# Card Schemas
+class CardCreate(BaseModel):
+    player_id: int = Field(..., description="ID do jogador associado")
+    name: str = Field(..., min_length=2, max_length=100, description="Nome da carta")
+    version: Optional[str] = Field(None, max_length=50, description="Versão da carta (TOTY, Icon, Base, etc)")
+    card_type: Optional[str] = Field(None, max_length=50, description="Tipo da carta (Legend, Featured, Standard)")
+    position: Optional[str] = Field(None, max_length=10, description="Posição principal da carta")
+    overall_rating: Optional[int] = Field(None, ge=40, le=99, description="Overall da carta (40-99)")
+    image_url: Optional[str] = Field(None, description="URL da imagem da carta")
+    
+    class Config:
+        json_schema_extra = {
+            "example": {
+                "player_id": 1,
+                "name": "Messi TOTY 2024",
+                "version": "TOTY",
+                "card_type": "Featured",
+                "position": "RWF",
+                "overall_rating": 98,
+                "image_url": "https://example.com/messi-toty.png"
+            }
+        }
+
+
+class CardUpdate(BaseModel):
+    name: Optional[str] = Field(None, min_length=2, max_length=100)
+    version: Optional[str] = Field(None, max_length=50)
+    card_type: Optional[str] = Field(None, max_length=50)
+    position: Optional[str] = Field(None, max_length=10)
+    overall_rating: Optional[int] = Field(None, ge=40, le=99)
+    image_url: Optional[str] = None
+
+
+class CardResponse(BaseModel):
+    id: int
+    player_id: int
+    name: str
+    version: Optional[str]
+    card_type: Optional[str]
+    position: Optional[str]
+    overall_rating: Optional[int]
+    image_url: Optional[str]
+    created_at: datetime
+    updated_at: datetime
+    
+    class Config:
+        json_schema_extra = {
+            "example": {
+                "id": 1,
+                "player_id": 1,
+                "name": "Messi TOTY 2024",
+                "version": "TOTY",
+                "card_type": "Featured",
+                "position": "RWF",
+                "overall_rating": 98,
+                "image_url": "https://example.com/messi-toty.png",
+                "created_at": "2024-01-01T00:00:00",
+                "updated_at": "2024-01-01T00:00:00"
+            }
+        }
