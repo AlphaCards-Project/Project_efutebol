@@ -58,9 +58,18 @@ function Builds() {
   const validateForm = (): boolean => {
     const newErrors: Record<string, string> = {}
 
-    if (!formData.title.trim()) {
-      newErrors.title = 'Nome do Jogador é obrigatório'
-    }
+    if (!formData.title.trim()) newErrors.title = 'Nome do Jogador é obrigatório';
+    if (!formData.platform.trim()) newErrors.platform = 'Plataforma é obrigatório';
+    if (!formData.shooting.trim()) newErrors.shooting = 'Shooting é obrigatório';
+    if (!formData.passing.trim()) newErrors.passing = 'Passing é obrigatório';
+    if (!formData.dribbling.trim()) newErrors.dribbling = 'Dribbling é obrigatório';
+    if (!formData.dexterity.trim()) newErrors.dexterity = 'Dexterity é obrigatório';
+    if (!formData.lower_body_strength.trim()) newErrors.lower_body_strength = 'Lower Body Strength é obrigatório';
+    if (!formData.aerial_strength.trim()) newErrors.aerial_strength = 'Aerial Strength é obrigatório';
+    if (!formData.defending.trim()) newErrors.defending = 'Defending é obrigatório';
+    if (!formData.gk_1.trim()) newErrors.gk_1 = 'GK 1 é obrigatório';
+    if (!formData.gk_2.trim()) newErrors.gk_2 = 'GK 2 é obrigatório';
+    if (!formData.gk_3.trim()) newErrors.gk_3 = 'GK 3 é obrigatório';
 
     setErrors(newErrors)
     return Object.keys(newErrors).length === 0
@@ -71,32 +80,25 @@ function Builds() {
     setSuccess(false)
     setErrors({})
 
-    console.log('=== INICIANDO SUBMISSÃO ===')
-    console.log('Form Data:', formData)
-
     if (!validateForm()) {
-      console.log('Validação falhou:', errors)
       return
     }
 
     try {
-      console.log('=== CRIANDO BUILD ===')
-      
-      // Criar build usando o buildService
       const buildData = {
         title: formData.title,
         card_id: Date.now().toString(),
-        platform: formData.platform || 'PC',
-        shooting: parseInt(formData.shooting) || 0,
-        passing: parseInt(formData.passing) || 0,
-        dribbling: parseInt(formData.dribbling) || 0,
-        dexterity: parseInt(formData.dexterity) || 0,
-        lower_body_strength: parseInt(formData.lower_body_strength) || 0,
-        aerial_strength: parseInt(formData.aerial_strength) || 0,
-        defending: parseInt(formData.defending) || 0,
-        gk_1: parseInt(formData.gk_1) || 0,
-        gk_2: parseInt(formData.gk_2) || 0,
-        gk_3: parseInt(formData.gk_3) || 0,
+        platform: formData.platform,
+        shooting: parseInt(formData.shooting),
+        passing: parseInt(formData.passing),
+        dribbling: parseInt(formData.dribbling),
+        dexterity: parseInt(formData.dexterity),
+        lower_body_strength: parseInt(formData.lower_body_strength),
+        aerial_strength: parseInt(formData.aerial_strength),
+        defending: parseInt(formData.defending),
+        gk_1: parseInt(formData.gk_1),
+        gk_2: parseInt(formData.gk_2),
+        gk_3: parseInt(formData.gk_3),
         overall_rating: parseInt(formData.overall_rating) || buildService.calculateOverall({
           shooting: parseInt(formData.shooting) || 0,
           passing: parseInt(formData.passing) || 0,
@@ -110,19 +112,10 @@ function Builds() {
         meta_content: '{}'
       }
 
-      console.log('Build Data preparada:', buildData)
-      
-      const createdBuild = buildService.createBuild(buildData)
-      console.log('Build criada com sucesso:', createdBuild)
-      
-      const allBuilds = buildService.getBuilds()
-      console.log('Total de builds após criar:', allBuilds.length)
-      console.log('Todas as builds:', allBuilds)
-      
+      buildService.createBuild(buildData)
       setSuccess(true)
-      alert('✅ Build criada com sucesso! Total de builds: ' + allBuilds.length)
+      alert('✅ Build criada com sucesso!')
       
-      // Resetar formulário
       setFormData({
         title: '',
         platform: '',
@@ -139,8 +132,6 @@ function Builds() {
         overall_rating: ''
       })
 
-      console.log('=== REDIRECIONANDO PARA CATÁLOGO ===')
-      // Redirecionar para o catálogo imediatamente
       setTimeout(() => {
         navigate('/dashboard/catalog')
       }, 1000)
@@ -192,7 +183,7 @@ function Builds() {
             </div>
 
             <div className="form-group">
-              <label htmlFor="platform">Plataforma</label>
+              <label htmlFor="platform">Plataforma *</label>
               <input
                 type="text"
                 id="platform"
@@ -200,11 +191,13 @@ function Builds() {
                 value={formData.platform}
                 onChange={handleChange}
                 placeholder="Ex: PC, PlayStation, Xbox, Mobile"
+                className={errors.platform ? 'error' : ''}
               />
+              {errors.platform && <span className="error-text">{errors.platform}</span>}
             </div>
 
             <div className="form-group">
-              <label htmlFor="overall_rating">Overall Rating</label>
+              <label htmlFor="overall_rating">Overall Rating (Opcional)</label>
               <input
                 type="text"
                 id="overall_rating"
@@ -219,11 +212,11 @@ function Builds() {
 
         {/* Atributos de Campo */}
         <div className="form-section">
-          <h3 className="section-title">Atributos de Campo (0-99)</h3>
+          <h3 className="section-title">Atributos de Campo (0-99) *</h3>
           
           <div className="form-row">
             <div className="form-group">
-              <label htmlFor="shooting">Shooting</label>
+              <label htmlFor="shooting">Shooting *</label>
               <input
                 type="text"
                 id="shooting"
@@ -237,7 +230,7 @@ function Builds() {
             </div>
 
             <div className="form-group">
-              <label htmlFor="passing">Passing</label>
+              <label htmlFor="passing">Passing *</label>
               <input
                 type="text"
                 id="passing"
@@ -251,7 +244,7 @@ function Builds() {
             </div>
 
             <div className="form-group">
-              <label htmlFor="dribbling">Dribbling</label>
+              <label htmlFor="dribbling">Dribbling *</label>
               <input
                 type="text"
                 id="dribbling"
@@ -265,7 +258,7 @@ function Builds() {
             </div>
 
             <div className="form-group">
-              <label htmlFor="dexterity">Dexterity</label>
+              <label htmlFor="dexterity">Dexterity *</label>
               <input
                 type="text"
                 id="dexterity"
@@ -282,11 +275,11 @@ function Builds() {
 
         {/* Atributos Físicos */}
         <div className="form-section">
-          <h3 className="section-title">Atributos Físicos (0-99)</h3>
+          <h3 className="section-title">Atributos Físicos (0-99) *</h3>
           
           <div className="form-row">
             <div className="form-group">
-              <label htmlFor="lower_body_strength">Lower Body Strength</label>
+              <label htmlFor="lower_body_strength">Lower Body Strength *</label>
               <input
                 type="text"
                 id="lower_body_strength"
@@ -300,7 +293,7 @@ function Builds() {
             </div>
 
             <div className="form-group">
-              <label htmlFor="aerial_strength">Aerial Strength</label>
+              <label htmlFor="aerial_strength">Aerial Strength *</label>
               <input
                 type="text"
                 id="aerial_strength"
@@ -314,7 +307,7 @@ function Builds() {
             </div>
 
             <div className="form-group">
-              <label htmlFor="defending">Defending</label>
+              <label htmlFor="defending">Defending *</label>
               <input
                 type="text"
                 id="defending"
@@ -331,11 +324,11 @@ function Builds() {
 
         {/* Atributos de Goleiro */}
         <div className="form-section">
-          <h3 className="section-title">Atributos de Goleiro (0-99)</h3>
+          <h3 className="section-title">Atributos de Goleiro (0-99) *</h3>
           
           <div className="form-row">
             <div className="form-group">
-              <label htmlFor="gk_1">GK 1</label>
+              <label htmlFor="gk_1">GK 1 *</label>
               <input
                 type="text"
                 id="gk_1"
@@ -349,7 +342,7 @@ function Builds() {
             </div>
 
             <div className="form-group">
-              <label htmlFor="gk_2">GK 2</label>
+              <label htmlFor="gk_2">GK 2 *</label>
               <input
                 type="text"
                 id="gk_2"
@@ -363,7 +356,7 @@ function Builds() {
             </div>
 
             <div className="form-group">
-              <label htmlFor="gk_3">GK 3</label>
+              <label htmlFor="gk_3">GK 3 *</label>
               <input
                 type="text"
                 id="gk_3"

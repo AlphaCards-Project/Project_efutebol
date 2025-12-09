@@ -8,6 +8,7 @@ import DashboardLayout from './dashboard/DashboardLayout'
 import Dashboard from './dashboard'
 import Builds from './dashboard/builds'
 import Catalog from './dashboard/catalog'
+import Cards from './dashboard/cards'
 import { UserStats } from './dashboard/analytics'
 import ProtectedRoute from './components/ProtectedRoute'
 
@@ -32,6 +33,7 @@ function App() {
           <Route index element={<Dashboard />} />
           <Route path="builds" element={<Builds />} />
           <Route path="catalog" element={<Catalog />} />
+          <Route path="cards" element={<Cards />} />
           <Route path="analytics" element={<UserStats />} />
         </Route>
       </Routes>
