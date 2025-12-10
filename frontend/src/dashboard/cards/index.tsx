@@ -1,8 +1,9 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import './Cards.css';
 import ImagemPadraoImage from '../../assets/Imagem_padrao - Editado.jpg';
 import { cardsService, type CardCreate } from '../../services/cardsService';
+import { playersService, type Player } from '../../services/playersService';
 
 interface CardFormData {
   name: string;
@@ -23,13 +24,30 @@ function Cards() {
     position: '',
     overall_rating: '',
     photo_url: '',
-    player_id: '1',
+    player_id: '',
   });
 
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [success, setSuccess] = useState(false);
   const [imageError, setImageError] = useState(false);
   const [isVerifyingUrl, setIsVerifyingUrl] = useState(false);
+
+  // Player Search State
+  const [searchQuery, setSearchQuery] = useState('');
+  const [searchResults, setSearchResults] = useState<Player[]>([]);
+  const [showDropdown, setShowDropdown] = useState(false);
+  const dropdownRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    // Click outside to close dropdown
+    const handleClickOutside = (event: MouseEvent) => {
+      if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node)) {
+        setShowDropdown(false);
+      }
+    };
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => document.removeEventListener('mousedown', handleClickOutside);
+  }, []);
 
   useEffect(() => {
     if (formData.photo_url) {
@@ -77,15 +95,56 @@ function Cards() {
     }
   };
 
+  const handleSearchChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const query = e.target.value;
+    setSearchQuery(query);
+    
+    // Clear selected player if search changes
+    if (formData.player_id) {
+       setFormData(prev => ({ ...prev, player_id: '' }));
+    }
+
+    if (query.length > 0) {
+      try {
+        const results = await playersService.listPlayers({ search: query });
+        setSearchResults(results);
+        setShowDropdown(true);
+      } catch (err) {
+        console.error('Erro ao buscar jogadores:', err);
+      }
+    } else {
+      setSearchResults([]);
+      setShowDropdown(false);
+    }
+  };
+
+  const handleSelectPlayer = (player: Player) => {
+    setFormData(prev => ({
+      ...prev,
+      player_id: player.id.toString(),
+      name: player.name // Auto-fill card name for convenience
+    }));
+    setSearchQuery(player.name);
+    setShowDropdown(false);
+    if (errors.player_id) {
+        setErrors(prev => ({ ...prev, player_id: '' }));
+    }
+  };
+
+  const handleCreateNewPlayer = () => {
+    navigate('/dashboard/jogador');
+  };
+
   const validateForm = (): boolean => {
     const newErrors: Record<string, string> = {};
-    if (!formData.name.trim()) newErrors.name = 'Nome do Jogador é obrigatório';
+    if (!formData.name.trim()) newErrors.name = 'Nome da Carta é obrigatório';
     if (!formData.version.trim()) newErrors.version = 'Versão é obrigatória';
     if (!formData.card_type.trim()) newErrors.card_type = 'Tipo de Carta é obrigatório';
     if (!formData.position.trim()) newErrors.position = 'Posição é obrigatória';
     if (!formData.overall_rating.trim()) newErrors.overall_rating = 'Overall Rating é obrigatório';
     if (!formData.photo_url.trim()) newErrors.photo_url = 'URL da Foto é obrigatório';
-    
+    if (!formData.player_id) newErrors.player_id = 'Selecione um jogador da lista';
+
     setErrors(prev => ({ ...prev, ...newErrors }));
     return Object.keys(newErrors).length === 0 && !errors.photo_url;
   };
@@ -141,10 +200,48 @@ function Cards() {
       <form className="cards-form" onSubmit={handleSubmit}>
         <div className="form-section">
           <h3 className="section-title">Informações da Carta</h3>
+          
+          {/* Player Search Field */}
+          <div className="form-row">
+             <div className="form-group autocomplete-container" ref={dropdownRef}>
+              <label htmlFor="playerSearch">Buscar Jogador *</label>
+              <input 
+                type="text" 
+                id="playerSearch" 
+                value={searchQuery} 
+                onChange={handleSearchChange} 
+                placeholder="Digite o nome do jogador..." 
+                autoComplete="off"
+                className={errors.player_id ? 'error' : ''}
+              />
+              {errors.player_id && <span className="error-text">{errors.player_id}</span>}
+              
+              {showDropdown && (
+                <div className="autocomplete-dropdown">
+                  {searchResults.map(player => (
+                    <div 
+                      key={player.id} 
+                      className="autocomplete-item"
+                      onClick={() => handleSelectPlayer(player)}
+                    >
+                      <span>{player.name}</span>
+                      <small style={{color: '#666'}}>{player.nationality}</small>
+                    </div>
+                  ))}
+                  {searchResults.length === 0 && searchQuery.length > 0 && (
+                      <div className="autocomplete-item create-new" onClick={handleCreateNewPlayer}>
+                          + Criar novo jogador: "{searchQuery}"
+                      </div>
+                  )}
+                </div>
+              )}
+            </div>
+          </div>
+
           <div className="form-row">
             <div className="form-group">
-              <label htmlFor="name">Nome do Jogador *</label>
-              <input type="text" id="name" name="name" value={formData.name} onChange={handleChange} placeholder="Ex: Neymar Jr." className={errors.name ? 'error' : ''} />
+              <label htmlFor="name">Nome da Carta *</label>
+              <input type="text" id="name" name="name" value={formData.name} onChange={handleChange} placeholder="Ex: Neymar Jr. (Será preenchido automaticamente)" className={errors.name ? 'error' : ''} />
               {errors.name && <span className="error-text">{errors.name}</span>}
             </div>
             <div className="form-group">

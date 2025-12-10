@@ -53,7 +53,12 @@ async def get_current_user(credentials: HTTPAuthorizationCredentials = Depends(s
             detail="Não foi possível validar credenciais",
         )
     
-    return {"user_id": user_id, "email": payload.get("email"), "is_premium": payload.get("is_premium", False)}
+    return {
+        "user_id": user_id, 
+        "email": payload.get("email"), 
+        "is_premium": payload.get("is_premium", False),
+        "role": payload.get("role", "free")
+    }
 
 
 async def get_current_user_optional(credentials: Optional[HTTPAuthorizationCredentials] = Depends(HTTPBearer(auto_error=False))) -> Optional[dict]:
@@ -72,6 +77,11 @@ async def get_current_user_optional(credentials: Optional[HTTPAuthorizationCrede
         if user_id is None:
             return None
         
-        return {"user_id": user_id, "email": payload.get("email"), "is_premium": payload.get("is_premium", False)}
+        return {
+            "user_id": user_id, 
+            "email": payload.get("email"), 
+            "is_premium": payload.get("is_premium", False),
+            "role": payload.get("role", "free")
+        }
     except:
         return None

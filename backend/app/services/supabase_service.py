@@ -99,9 +99,30 @@ class SupabaseService:
             })
             
             if auth_response.user:
-                # Retornar dados do auth (não precisa da tabela users)
+                user_id = str(auth_response.user.id)
+                
+                # Tentar buscar role da tabela users
+                try:
+                    user_data = self.client.table("users").select("role, is_premium, nickname, platform, name").eq("id", user_id).execute()
+                    if user_data.data and len(user_data.data) > 0:
+                        user_record = user_data.data[0]
+                        return {
+                            "id": user_id,
+                            "email": auth_response.user.email or email,
+                            "name": user_record.get("name") or auth_response.user.user_metadata.get("full_name") if auth_response.user.user_metadata else None,
+                            "nickname": user_record.get("nickname"),
+                            "platform": user_record.get("platform"),
+                            "role": user_record.get("role", "free"),
+                            "is_premium": user_record.get("is_premium", False),
+                            "daily_questions_used": 0,
+                            "created_at": str(auth_response.user.created_at) if auth_response.user.created_at else str(datetime.now(timezone.utc))
+                        }
+                except Exception as e:
+                    print(f"⚠️ Não foi possível buscar role da tabela users: {e}")
+                
+                # Fallback se não conseguir buscar da tabela users
                 return {
-                    "id": str(auth_response.user.id),
+                    "id": user_id,
                     "email": auth_response.user.email or email,
                     "name": auth_response.user.user_metadata.get("full_name") if auth_response.user.user_metadata else None,
                     "nickname": None,
