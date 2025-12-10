@@ -1,11 +1,12 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
 import './Builds.css'
-import { buildService } from '../../services/buildService'
+import { buildService, type BuildCreate } from '../../services/buildService'
+import { cardsService, type Card } from '../../services/cardsService'
 
 interface BuildFormData {
   title: string
-  platform: string
+  card_id: string
   shooting: string
   passing: string
   dribbling: string
@@ -21,9 +22,15 @@ interface BuildFormData {
 
 function Builds() {
   const navigate = useNavigate()
+  const [step, setStep] = useState<'select-card' | 'create-card' | 'create-build'>('select-card')
+  const [cards, setCards] = useState<Card[]>([])
+  const [selectedCard, setSelectedCard] = useState<Card | null>(null)
+  const [loading, setLoading] = useState(false)
+  const [searchTerm, setSearchTerm] = useState('')
+  
   const [formData, setFormData] = useState<BuildFormData>({
     title: '',
-    platform: '',
+    card_id: '',
     shooting: '',
     passing: '',
     dribbling: '',
@@ -39,6 +46,28 @@ function Builds() {
 
   const [errors, setErrors] = useState<Record<string, string>>({})
   const [success, setSuccess] = useState(false)
+
+  useEffect(() => {
+    loadCards()
+  }, [])
+
+  const loadCards = async () => {
+    try {
+      setLoading(true)
+      const data = await cardsService.listCards({ limit: 100 })
+      setCards(data)
+    } catch (error) {
+      console.error('Erro ao carregar cartas:', error)
+    } finally {
+      setLoading(false)
+    }
+  }
+
+  const handleCardSelect = (card: Card) => {
+    setSelectedCard(card)
+    setFormData({ ...formData, card_id: card.id.toString(), title: card.name })
+    setStep('create-build')
+  }
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     const { name, value, type } = e.target
@@ -71,22 +100,21 @@ function Builds() {
     setSuccess(false)
     setErrors({})
 
-    console.log('=== INICIANDO SUBMISSÃO ===')
-    console.log('Form Data:', formData)
-
     if (!validateForm()) {
-      console.log('Validação falhou:', errors)
+      return
+    }
+
+    if (!formData.card_id) {
+      setErrors({ card_id: 'Selecione uma carta primeiro' })
       return
     }
 
     try {
-      console.log('=== CRIANDO BUILD ===')
+      setLoading(true)
       
-      // Criar build usando o buildService
-      const buildData = {
+      const buildData: BuildCreate = {
+        card_id: parseInt(formData.card_id),
         title: formData.title,
-        card_id: Date.now().toString(),
-        platform: formData.platform || 'PC',
         shooting: parseInt(formData.shooting) || 0,
         passing: parseInt(formData.passing) || 0,
         dribbling: parseInt(formData.dribbling) || 0,
@@ -97,71 +125,103 @@ function Builds() {
         gk_1: parseInt(formData.gk_1) || 0,
         gk_2: parseInt(formData.gk_2) || 0,
         gk_3: parseInt(formData.gk_3) || 0,
-        overall_rating: parseInt(formData.overall_rating) || buildService.calculateOverall({
-          shooting: parseInt(formData.shooting) || 0,
-          passing: parseInt(formData.passing) || 0,
-          dribbling: parseInt(formData.dribbling) || 0,
-          dexterity: parseInt(formData.dexterity) || 0,
-          lower_body_strength: parseInt(formData.lower_body_strength) || 0,
-          aerial_strength: parseInt(formData.aerial_strength) || 0,
-          defending: parseInt(formData.defending) || 0
-        }),
-        is_official_meta: false,
-        meta_content: '{}'
+        is_official_meta: false
       }
 
-      console.log('Build Data preparada:', buildData)
-      
-      const createdBuild = buildService.createBuild(buildData)
+      // Calcular overall se não fornecido
+      if (formData.overall_rating) {
+        buildData.overall_rating = parseInt(formData.overall_rating)
+      }
+
+      const createdBuild = await buildService.createBuild(buildData)
       console.log('Build criada com sucesso:', createdBuild)
       
-      const allBuilds = buildService.getBuilds()
-      console.log('Total de builds após criar:', allBuilds.length)
-      console.log('Todas as builds:', allBuilds)
-      
       setSuccess(true)
-      alert('✅ Build criada com sucesso! Total de builds: ' + allBuilds.length)
+      alert('✅ Build criada com sucesso!')
       
-      // Resetar formulário
-      setFormData({
-        title: '',
-        platform: '',
-        shooting: '',
-        passing: '',
-        dribbling: '',
-        dexterity: '',
-        lower_body_strength: '',
-        aerial_strength: '',
-        defending: '',
-        gk_1: '',
-        gk_2: '',
-        gk_3: '',
-        overall_rating: ''
-      })
-
-      console.log('=== REDIRECIONANDO PARA CATÁLOGO ===')
-      // Redirecionar para o catálogo imediatamente
       setTimeout(() => {
         navigate('/dashboard/catalog')
-      }, 1000)
+      }, 1500)
 
-    } catch (error) {
-      console.error('=== ERRO AO SALVAR BUILD ===', error)
-      alert('❌ Erro ao salvar build: ' + error)
-      setErrors({ submit: 'Erro ao salvar build. Tente novamente.' })
+    } catch (error: any) {
+      console.error('Erro ao salvar build:', error)
+      setErrors({ submit: error.message || 'Erro ao salvar build. Tente novamente.' })
+    } finally {
+      setLoading(false)
     }
+  }
+
+  const filteredCards = cards.filter(card => 
+    card.name.toLowerCase().includes(searchTerm.toLowerCase())
+  )
+
+  if (step === 'select-card') {
+    return (
+      <div className="builds-content">
+        <div className="builds-header">
+          <h1 className="builds-title">Selecionar Carta</h1>
+          <p className="builds-subtitle">Escolha uma carta para criar sua build</p>
+        </div>
+
+        <div className="card-selection">
+          <div className="search-bar">
+            <input
+              type="text"
+              placeholder="Buscar carta..."
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
+              className="search-input"
+            />
+          </div>
+
+          {loading ? (
+            <div className="loading">Carregando cartas...</div>
+          ) : (
+            <div className="cards-grid">
+              {filteredCards.map((card) => (
+                <div key={card.id} className="card-item" onClick={() => handleCardSelect(card)}>
+                  {card.image_url && (
+                    <img src={card.image_url} alt={card.name} className="card-image" />
+                  )}
+                  <div className="card-info">
+                    <h3>{card.name}</h3>
+                    <p className="card-version">{card.version}</p>
+                    <p className="card-position">{card.position}</p>
+                    <p className="card-overall">Overall: {card.overall_rating}</p>
+                  </div>
+                </div>
+              ))}
+              {filteredCards.length === 0 && (
+                <p className="no-results">Nenhuma carta encontrada</p>
+              )}
+            </div>
+          )}
+
+          <div className="form-actions">
+            <button type="button" className="btn-secondary" onClick={() => navigate('/dashboard')}>
+              Voltar
+            </button>
+            <button type="button" className="btn-primary" onClick={() => setStep('create-card')}>
+              Criar Nova Carta
+            </button>
+          </div>
+        </div>
+      </div>
+    )
   }
 
   return (
     <div className="builds-content">
       <div className="builds-header">
         <h1 className="builds-title">Criar Nova Build</h1>
-        <p className="builds-subtitle">Configure os atributos da sua build personalizada</p>
+        <p className="builds-subtitle">
+          {selectedCard ? `Build para: ${selectedCard.name}` : 'Configure os atributos da sua build'}
+        </p>
       </div>
 
       {success && (
         <div className="success-message">
-          ✅ Build salva com sucesso! Redirecionando para o catálogo...
+          ✅ Build salva com sucesso! Redirecionando...
         </div>
       )}
 
@@ -189,18 +249,6 @@ function Builds() {
                 className={errors.title ? 'error' : ''}
               />
               {errors.title && <span className="error-text">{errors.title}</span>}
-            </div>
-
-            <div className="form-group">
-              <label htmlFor="platform">Plataforma</label>
-              <input
-                type="text"
-                id="platform"
-                name="platform"
-                value={formData.platform}
-                onChange={handleChange}
-                placeholder="Ex: PC, PlayStation, Xbox, Mobile"
-              />
             </div>
 
             <div className="form-group">
@@ -380,11 +428,11 @@ function Builds() {
 
         {/* Botões */}
         <div className="form-actions">
-          <button type="button" className="btn-secondary" onClick={() => navigate('/dashboard')}>
-            Cancelar
+          <button type="button" className="btn-secondary" onClick={() => setStep('select-card')}>
+            Voltar
           </button>
-          <button type="submit" className="btn-primary">
-            Salvar Build
+          <button type="submit" className="btn-primary" disabled={loading}>
+            {loading ? 'Salvando...' : 'Salvar Build'}
           </button>
         </div>
       </form>

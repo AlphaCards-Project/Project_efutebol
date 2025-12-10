@@ -8,15 +8,16 @@ function Dashboard() {
 
   useEffect(() => {
     // Carregar contagem de builds
-    const builds = buildService.getBuilds()
-    setBuildsCount(builds.length)
-
-    // Inscrever-se para mudanças
-    const unsubscribe = buildService.subscribe((updatedBuilds) => {
-      setBuildsCount(updatedBuilds.length)
-    })
-
-    return () => unsubscribe()
+    const loadBuildsCount = async () => {
+      try {
+        const builds = await buildService.getMyBuilds()
+        setBuildsCount(builds.length)
+      } catch (error) {
+        console.error('Erro ao carregar builds:', error)
+      }
+    }
+    
+    loadBuildsCount()
   }, [])
   // Dados para os gráficos
   const barData = [

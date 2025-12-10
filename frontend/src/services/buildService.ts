@@ -1,10 +1,10 @@
-// Serviço para gerenciar builds do usuário
+const API_BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:8000'
 
 export interface Build {
-  id: string
+  id: number
+  user_id: string
+  card_id: number
   title: string
-  card_id: string
-  platform: string
   shooting: number
   passing: number
   dribbling: number
@@ -15,93 +15,172 @@ export interface Build {
   gk_1: number
   gk_2: number
   gk_3: number
-  overall_rating: number
+  overall_rating?: number
   is_official_meta: boolean
-  meta_content: string
+  meta_content?: Record<string, any>
   created_at: string
   updated_at: string
 }
 
+export interface BuildCreate {
+  card_id: number
+  title: string
+  shooting: number
+  passing: number
+  dribbling: number
+  dexterity: number
+  lower_body_strength: number
+  aerial_strength: number
+  defending: number
+  gk_1: number
+  gk_2: number
+  gk_3: number
+  overall_rating?: number
+  is_official_meta?: boolean
+  meta_content?: Record<string, any>
+}
+
+export interface BuildUpdate {
+  title?: string
+  shooting?: number
+  passing?: number
+  dribbling?: number
+  dexterity?: number
+  lower_body_strength?: number
+  aerial_strength?: number
+  defending?: number
+  gk_1?: number
+  gk_2?: number
+  gk_3?: number
+  overall_rating?: number
+  is_official_meta?: boolean
+  meta_content?: Record<string, any>
+}
+
+export interface BuildQuery {
+  player_name: string
+  position: string
+}
+
+export interface BuildRecommendation {
+  player_name: string
+  position: string
+  priority_points: Array<{ skill: string; points: number }>
+  playstyle: string
+  tips: string
+  from_cache: boolean
+}
+
 class BuildService {
-  private storageKey = 'user_builds'
-  private listeners: Array<(builds: Build[]) => void> = []
-
-  constructor() {
-    // Inicializar localStorage se não existir
-    if (!localStorage.getItem(this.storageKey)) {
-      localStorage.setItem(this.storageKey, JSON.stringify([]))
+  private getAuthHeaders(): HeadersInit {
+    const token = localStorage.getItem('token')
+    return {
+      'Content-Type': 'application/json',
+      ...(token && { 'Authorization': `Bearer ${token}` })
     }
   }
 
-  // Obter todas as builds
-  getBuilds(): Build[] {
-    const stored = localStorage.getItem(this.storageKey)
-    if (stored) {
-      try {
-        return JSON.parse(stored)
-      } catch {
-        return []
+  async getBuildRecommendation(query: BuildQuery): Promise<BuildRecommendation> {
+    const response = await fetch(`${API_BASE_URL}/api/v1/builds`, {
+      method: 'POST',
+      headers: this.getAuthHeaders(),
+      body: JSON.stringify(query)
+    })
+
+    if (!response.ok) {
+      if (response.status === 429) {
+        throw new Error('Limite diário de perguntas atingido. Faça upgrade para Premium!')
       }
+      const error = await response.json()
+      throw new Error(error.detail || 'Erro ao buscar recomendação')
     }
-    return []
+
+    return response.json()
   }
 
-  // Obter uma build por ID
-  getBuildById(id: string): Build | null {
-    const builds = this.getBuilds()
-    return builds.find(b => b.id === id) || null
-  }
+  async createBuild(buildData: BuildCreate): Promise<Build> {
+    const response = await fetch(`${API_BASE_URL}/api/v1/builds/create`, {
+      method: 'POST',
+      headers: this.getAuthHeaders(),
+      body: JSON.stringify(buildData)
+    })
 
-  // Criar nova build
-  createBuild(buildData: Omit<Build, 'id' | 'created_at' | 'updated_at'>): Build {
-    const builds = this.getBuilds()
-    const newBuild: Build = {
-      ...buildData,
-      id: this.generateId(),
-      created_at: new Date().toISOString(),
-      updated_at: new Date().toISOString()
+    if (!response.ok) {
+      const error = await response.json()
+      throw new Error(error.detail || 'Erro ao criar build')
     }
-    
-    builds.push(newBuild)
-    localStorage.setItem(this.storageKey, JSON.stringify(builds))
-    this.notifyListeners(builds)
-    
-    return newBuild
+
+    return response.json()
   }
 
-  // Atualizar build existente
-  updateBuild(id: string, buildData: Partial<Build>): Build | null {
-    const builds = this.getBuilds()
-    const index = builds.findIndex(b => b.id === id)
-    
-    if (index === -1) return null
-    
-    builds[index] = {
-      ...builds[index],
-      ...buildData,
-      updated_at: new Date().toISOString()
+  async getMyBuilds(): Promise<Build[]> {
+    const response = await fetch(`${API_BASE_URL}/api/v1/builds/my-builds`, {
+      headers: this.getAuthHeaders()
+    })
+
+    if (!response.ok) {
+      const error = await response.json()
+      throw new Error(error.detail || 'Erro ao buscar minhas builds')
     }
-    
-    localStorage.setItem(this.storageKey, JSON.stringify(builds))
-    this.notifyListeners(builds)
-    
-    return builds[index]
+
+    return response.json()
   }
 
-  // Deletar build
-  deleteBuild(id: string): boolean {
-    const builds = this.getBuilds()
-    const filteredBuilds = builds.filter(b => b.id !== id)
-    
-    if (filteredBuilds.length === builds.length) return false
-    
-    localStorage.setItem(this.storageKey, JSON.stringify(filteredBuilds))
-    this.notifyListeners(filteredBuilds)
-    
-    return true
+  async getBuildsByCard(cardId: number): Promise<Build[]> {
+    const response = await fetch(`${API_BASE_URL}/api/v1/builds/card/${cardId}`, {
+      headers: this.getAuthHeaders()
+    })
+
+    if (!response.ok) {
+      const error = await response.json()
+      throw new Error(error.detail || 'Erro ao buscar builds da carta')
+    }
+
+    return response.json()
   }
 
-  // Calcular overall médio
+  async getBuildById(buildId: number): Promise<Build> {
+    const response = await fetch(`${API_BASE_URL}/api/v1/builds/${buildId}`, {
+      headers: this.getAuthHeaders()
+    })
+
+    if (!response.ok) {
+      const error = await response.json()
+      throw new Error(error.detail || 'Erro ao buscar build')
+    }
+
+    return response.json()
+  }
+
+  async updateBuild(buildId: number, buildData: BuildUpdate): Promise<Build> {
+    const response = await fetch(`${API_BASE_URL}/api/v1/builds/${buildId}`, {
+      method: 'PUT',
+      headers: this.getAuthHeaders(),
+      body: JSON.stringify(buildData)
+    })
+
+    if (!response.ok) {
+      const error = await response.json()
+      throw new Error(error.detail || 'Erro ao atualizar build')
+    }
+
+    return response.json()
+  }
+
+  async deleteBuild(buildId: number): Promise<{ message: string; detail: string }> {
+    const response = await fetch(`${API_BASE_URL}/api/v1/builds/${buildId}`, {
+      method: 'DELETE',
+      headers: this.getAuthHeaders()
+    })
+
+    if (!response.ok) {
+      const error = await response.json()
+      throw new Error(error.detail || 'Erro ao deletar build')
+    }
+
+    return response.json()
+  }
+
   calculateOverall(build: Partial<Build>): number {
     const stats = [
       build.shooting || 0,
@@ -115,28 +194,6 @@ class BuildService {
     
     const sum = stats.reduce((acc, val) => acc + val, 0)
     return Math.round(sum / stats.length)
-  }
-
-  // Inscrever-se para mudanças
-  subscribe(listener: (builds: Build[]) => void) {
-    this.listeners.push(listener)
-    return () => {
-      this.listeners = this.listeners.filter(l => l !== listener)
-    }
-  }
-
-  private notifyListeners(builds: Build[]) {
-    this.listeners.forEach(listener => listener(builds))
-  }
-
-  private generateId(): string {
-    return `build_${Date.now()}_${Math.random().toString(36).substring(2, 9)}`
-  }
-
-  // Limpar todas as builds (útil para testes)
-  clearAllBuilds() {
-    localStorage.setItem(this.storageKey, JSON.stringify([]))
-    this.notifyListeners([])
   }
 }
 

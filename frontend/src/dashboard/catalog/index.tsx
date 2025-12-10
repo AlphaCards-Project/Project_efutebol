@@ -6,58 +6,36 @@ import { buildService, type Build } from '../../services/buildService'
 function Catalog() {
   const navigate = useNavigate()
   const [builds, setBuilds] = useState<Build[]>([])
+  const [loading, setLoading] = useState(false)
+  const [error, setError] = useState<string | null>(null)
 
   useEffect(() => {
-    // Carregar builds
     loadBuilds()
-
-    // Inscrever-se para mudanças
-    const unsubscribe = buildService.subscribe((updatedBuilds) => {
-      setBuilds(updatedBuilds)
-    })
-
-    // Debug: verificar localStorage
-    console.log('Builds do localStorage:', localStorage.getItem('user_builds'))
-    console.log('Builds carregadas:', buildService.getBuilds())
-
-    return () => unsubscribe()
   }, [])
 
-  const loadBuilds = () => {
-    const userBuilds = buildService.getBuilds()
-    setBuilds(userBuilds)
-  }
-
-  const handleDeleteBuild = (id: string) => {
-    if (window.confirm('Tem certeza que deseja deletar esta build?')) {
-      buildService.deleteBuild(id)
-      loadBuilds()
+  const loadBuilds = async () => {
+    try {
+      setLoading(true)
+      setError(null)
+      const data = await buildService.getMyBuilds()
+      setBuilds(data)
+    } catch (err: any) {
+      console.error('Erro ao carregar builds:', err)
+      setError(err.message || 'Erro ao carregar builds')
+    } finally {
+      setLoading(false)
     }
   }
 
-  const createTestBuild = () => {
-    console.log('Criando build de teste...')
-    const testBuild = buildService.createBuild({
-      title: 'Build Teste',
-      card_id: '1001',
-      platform: 'PC',
-      shooting: 85,
-      passing: 80,
-      dribbling: 90,
-      dexterity: 75,
-      lower_body_strength: 80,
-      aerial_strength: 85,
-      defending: 70,
-      gk_1: 50,
-      gk_2: 50,
-      gk_3: 50,
-      overall_rating: 80,
-      is_official_meta: false,
-      meta_content: '{}'
-    })
-    console.log('Build criada:', testBuild)
-    console.log('Total de builds agora:', buildService.getBuilds().length)
-    loadBuilds()
+  const handleDeleteBuild = async (id: number) => {
+    if (window.confirm('Tem certeza que deseja deletar esta build?')) {
+      try {
+        await buildService.deleteBuild(id)
+        setBuilds(builds.filter(b => b.id !== id))
+      } catch (err: any) {
+        alert('Erro ao deletar build: ' + err.message)
+      }
+    }
   }
 
   return (
@@ -90,7 +68,15 @@ function Catalog() {
           </button>
         </div>
 
-        {builds.length === 0 ? (
+        {loading ? (
+          <div className="empty-state">
+            <p>Carregando builds...</p>
+          </div>
+        ) : error ? (
+          <div className="empty-state">
+            <p style={{ color: '#f87171' }}>{error}</p>
+          </div>
+        ) : builds.length === 0 ? (
           <div className="empty-state">
             <svg width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
               <rect x="3" y="3" width="18" height="18" rx="2" ry="2"/>
@@ -99,9 +85,6 @@ function Catalog() {
             </svg>
             <h3>Nenhuma build criada ainda</h3>
             <p>Clique em "Nova Build" para criar sua primeira build personalizada</p>
-            <button onClick={createTestBuild} style={{ marginTop: '1rem', padding: '0.5rem 1rem', cursor: 'pointer' }}>
-              [TESTE] Criar Build de Exemplo
-            </button>
           </div>
         ) : (
           <div className="builds-grid">
@@ -113,7 +96,6 @@ function Catalog() {
                     {build.is_official_meta && (
                       <span className="build-meta-badge">⭐ META</span>
                     )}
-                    <span className="build-platform-badge">{build.platform}</span>
                   </div>
                 </div>
 
