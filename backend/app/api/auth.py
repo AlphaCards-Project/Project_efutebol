@@ -25,7 +25,6 @@ async def register(user_data: UserRegister):
             email=user_data.email,
             password=user_data.password,
             full_name=user_data.full_name,
-            nickname=user_data.nickname,
             platform=user_data.platform
         )
         

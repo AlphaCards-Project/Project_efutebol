@@ -1,4 +1,4 @@
-from pydantic import BaseModel, EmailStr, Field
+from pydantic import BaseModel, EmailStr, Field, validator
 from typing import Optional, List, Dict
 from datetime import datetime
 
@@ -8,8 +8,17 @@ class UserRegister(BaseModel):
     email: EmailStr
     password: str = Field(..., min_length=6, description="Senha com no mínimo 6 caracteres")
     full_name: Optional[str] = Field(None, max_length=100, description="Nome completo do usuário")
-    nickname: Optional[str] = Field(None, max_length=50, description="Apelido/gamertag do usuário")
     platform: Optional[str] = Field(None, description="Plataforma: console, pc ou mobile")
+    
+    @validator('platform')
+    def validate_platform(cls, v):
+        if v is not None:
+            valid_platforms = ['console', 'pc', 'mobile']
+            v_lower = v.lower()
+            if v_lower not in valid_platforms:
+                raise ValueError(f'Plataforma deve ser: {", ".join(valid_platforms)}')
+            return v_lower
+        return v
     
     class Config:
         json_schema_extra = {
@@ -17,7 +26,6 @@ class UserRegister(BaseModel):
                 "email": "usuario@exemplo.com",
                 "password": "senha123",
                 "full_name": "João Silva",
-                "nickname": "joaogamer",
                 "platform": "console"
             }
         }
@@ -38,14 +46,12 @@ class UserLogin(BaseModel):
 
 class UserUpdate(BaseModel):
     full_name: Optional[str] = Field(None, max_length=100)
-    nickname: Optional[str] = Field(None, max_length=50)
     platform: Optional[str] = Field(None)
 
     class Config:
         json_schema_extra = {
             "example": {
                 "full_name": "João Silva",
-                "nickname": "joaogamer",
                 "platform": "console"
             }
         }
@@ -55,7 +61,6 @@ class UserResponse(BaseModel):
     id: str
     email: str
     name: Optional[str] = None
-    nickname: Optional[str] = None
     platform: Optional[str] = None
     role: str = "free"
     is_premium: bool = False

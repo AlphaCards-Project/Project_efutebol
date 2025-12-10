@@ -9,8 +9,7 @@ function Registro() {
     password: '',
     confirmPassword: '',
     full_name: '',
-    nickname: '',
-    platform: 'PC'
+    platform: 'pc'
   })
   const [error, setError] = useState('')
   const [loading, setLoading] = useState(false)
@@ -52,7 +51,6 @@ function Registro() {
           email: formData.email,
           password: formData.password,
           full_name: formData.full_name,
-          nickname: formData.nickname,
           platform: formData.platform
         })
       })
@@ -106,19 +104,6 @@ function Registro() {
           </div>
 
           <div className="form-group">
-            <label htmlFor="nickname">Nickname</label>
-            <input
-              type="text"
-              id="nickname"
-              name="nickname"
-              value={formData.nickname}
-              onChange={handleChange}
-              placeholder="Digite seu nickname"
-              required
-            />
-          </div>
-
-          <div className="form-group">
             <label htmlFor="email">E-mail</label>
             <input
               type="email"
@@ -140,9 +125,9 @@ function Registro() {
               onChange={handleChange}
               required
             >
-              <option value="PC">PC</option>
-              <option value="PlayStation">Console</option>
-              <option value="Mobile">Mobile</option>
+              <option value="pc">PC</option>
+              <option value="console">Console</option>
+              <option value="mobile">Mobile</option>
             </select>
           </div>
 

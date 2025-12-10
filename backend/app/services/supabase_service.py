@@ -14,7 +14,6 @@ class SupabaseService:
         email: str, 
         password: str, 
         full_name: Optional[str] = None, 
-        nickname: Optional[str] = None,
         platform: Optional[str] = None
     ) -> Dict:
         """Cria um novo usuário"""
@@ -26,7 +25,6 @@ class SupabaseService:
                 "options": {
                     "data": {
                         "full_name": full_name,
-                        "nickname": nickname,
                         "platform": platform
                     }
                 }
@@ -38,7 +36,6 @@ class SupabaseService:
                     "id": str(auth_response.user.id),
                     "email": email,
                     "name": full_name,
-                    "nickname": nickname,
                     "platform": platform,
                     "role": "free",
                     "is_premium": False,
@@ -54,22 +51,7 @@ class SupabaseService:
                     if "could not find the 'platform' column" in error_msg:
                         print("⚠️  Coluna 'platform' não encontrada. Tentando inserir sem ela...")
                         user_data.pop("platform", None)
-                        # Se platform não existe, pode ser que nickname também não exista?
-                        # Vamos tentar remover platform primeiro.
-                        try:
-                            self.client.table("users").insert(user_data).execute()
-                        except Exception as e2:
-                             # Se falhar de novo, tenta remover nickname também
-                             if "could not find the 'nickname' column" in str(e2).lower():
-                                 print("⚠️  Coluna 'nickname' não encontrada. Tentando inserir sem ela...")
-                                 user_data.pop("nickname", None)
-                                 self.client.table("users").insert(user_data).execute()
-                             else:
-                                 raise e2
-                    elif "could not find the 'nickname' column" in error_msg:
-                         print("⚠️  Coluna 'nickname' não encontrada. Tentando inserir sem ela...")
-                         user_data.pop("nickname", None)
-                         self.client.table("users").insert(user_data).execute()
+                        self.client.table("users").insert(user_data).execute()
                     else:
                         raise e
                 
@@ -77,7 +59,6 @@ class SupabaseService:
                     "id": str(auth_response.user.id),
                     "email": email,
                     "name": full_name,
-                    "nickname": nickname,
                     "platform": platform,
                     "role": "free",
                     "is_premium": False,
@@ -103,14 +84,13 @@ class SupabaseService:
                 
                 # Tentar buscar role da tabela users
                 try:
-                    user_data = self.client.table("users").select("role, is_premium, nickname, platform, name").eq("id", user_id).execute()
+                    user_data = self.client.table("users").select("role, is_premium, platform, name").eq("id", user_id).execute()
                     if user_data.data and len(user_data.data) > 0:
                         user_record = user_data.data[0]
                         return {
                             "id": user_id,
                             "email": auth_response.user.email or email,
                             "name": user_record.get("name") or auth_response.user.user_metadata.get("full_name") if auth_response.user.user_metadata else None,
-                            "nickname": user_record.get("nickname"),
                             "platform": user_record.get("platform"),
                             "role": user_record.get("role", "free"),
                             "is_premium": user_record.get("is_premium", False),
@@ -125,7 +105,6 @@ class SupabaseService:
                     "id": user_id,
                     "email": auth_response.user.email or email,
                     "name": auth_response.user.user_metadata.get("full_name") if auth_response.user.user_metadata else None,
-                    "nickname": None,
                     "platform": None,
                     "role": "free",
                     "is_premium": False,
