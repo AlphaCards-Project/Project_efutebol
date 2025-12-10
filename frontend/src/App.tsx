@@ -9,6 +9,7 @@ import Dashboard from './dashboard'
 import Builds from './dashboard/builds'
 import Catalog from './dashboard/catalog'
 import Cards from './dashboard/cards'
+import Jogador from './dashboard/jogador'
 import { UserStats } from './dashboard/analytics'
 import ProtectedRoute from './components/ProtectedRoute'
 
@@ -34,6 +35,7 @@ function App() {
           <Route path="builds" element={<Builds />} />
           <Route path="catalog" element={<Catalog />} />
           <Route path="cards" element={<Cards />} />
+          <Route path="jogador" element={<Jogador />} />
           <Route path="analytics" element={<UserStats />} />
         </Route>
       </Routes>

@@ -9,6 +9,7 @@ function DashboardLayout() {
 
   const menuItems = [
     { name: 'Home', icon: '🏠', path: '/dashboard' },
+    { name: 'Jogador', icon: '👤', path: '/dashboard/jogador' },
     { name: 'Cartas', icon: '🃏', path: '/dashboard/cards' },
     { name: 'Builds', icon: '⚙️', path: '/dashboard/builds' },
     { name: 'Catálogo', icon: '📚', path: '/dashboard/catalog' },

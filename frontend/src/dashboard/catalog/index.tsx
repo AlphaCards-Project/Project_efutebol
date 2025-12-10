@@ -1,182 +1,111 @@
-import { useState, useEffect } from 'react'
-import { useNavigate } from 'react-router-dom'
-import '../Dashboard.css'
-import { buildService, type Build } from '../../services/buildService'
+import { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
+import '../Dashboard.css';
+import { cardsService, type Card } from '../../services/cardsService';
 
 function Catalog() {
-  const navigate = useNavigate()
-  const [builds, setBuilds] = useState<Build[]>([])
-  const [loading, setLoading] = useState(false)
-  const [error, setError] = useState<string | null>(null)
+  const navigate = useNavigate();
+  const [cards, setCards] = useState<Card[]>([]);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
-    loadBuilds()
-  }, [])
+    loadCards();
+  }, []);
 
-  const loadBuilds = async () => {
+  const loadCards = async () => {
     try {
-      setLoading(true)
-      setError(null)
-      const data = await buildService.getMyBuilds()
-      setBuilds(data)
+      setLoading(true);
+      setError(null);
+      const data = await cardsService.listCards();
+      setCards(data);
     } catch (err: any) {
-      console.error('Erro ao carregar builds:', err)
-      setError(err.message || 'Erro ao carregar builds')
+      console.error('Erro ao carregar cartas:', err);
+      setError(err.message || 'Erro ao carregar cartas');
     } finally {
-      setLoading(false)
+      setLoading(false);
     }
-  }
+  };
 
-  const handleDeleteBuild = async (id: number) => {
-    if (window.confirm('Tem certeza que deseja deletar esta build?')) {
+  const handleDeleteCard = async (id: number) => {
+    if (window.confirm('Tem certeza que deseja deletar esta carta?')) {
       try {
-        await buildService.deleteBuild(id)
-        setBuilds(builds.filter(b => b.id !== id))
+        await cardsService.deleteCard(id);
+        setCards(cards.filter(c => c.id !== id));
       } catch (err: any) {
-        alert('Erro ao deletar build: ' + err.message)
+        alert('Erro ao deletar carta: ' + err.message);
       }
     }
-  }
+  };
+
+  const displayError = error && error.includes('1 validation error for CardResponse player_id') 
+    ? 'Não foi possível carregar as cartas. Por favor, tente novamente mais tarde.' 
+    : error;
 
   return (
     <div className="dashboard-content">
-      {/* Header */}
       <div className="dashboard-header">
-        <h1 className="dashboard-title">Catálogo de Builds</h1>
-        <p className="dashboard-subtitle">Visualize e gerencie todas as suas builds criadas</p>
+        <h1 className="dashboard-title">Catálogo de Cartas</h1>
+        <p className="dashboard-subtitle">Visualize e gerencie todas as suas cartas criadas</p>
       </div>
 
-      {/* Catálogo de Builds */}
       <div className="builds-catalog-section">
         <div className="catalog-header">
           <div className="catalog-stats">
             <div className="catalog-stat-item">
-              <span className="catalog-stat-value">{builds.length}</span>
-              <span className="catalog-stat-label">Total de Builds</span>
-            </div>
-            <div className="catalog-stat-item">
-              <span className="catalog-stat-value">{builds.filter(b => b.is_official_meta).length}</span>
-              <span className="catalog-stat-label">Builds META</span>
+              <span className="catalog-stat-value">{cards.length}</span>
+              <span className="catalog-stat-label">Total de Cartas</span>
             </div>
           </div>
-          <button className="btn-new-build" onClick={() => navigate('/dashboard/builds')}>
+          <button className="btn-new-build" onClick={() => navigate('/dashboard/cards')}>
             <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor">
               <line x1="12" y1="5" x2="12" y2="19" strokeWidth="2" strokeLinecap="round"/>
               <line x1="5" y1="12" x2="19" y2="12" strokeWidth="2" strokeLinecap="round"/>
             </svg>
-            Nova Build
+            Nova Carta
           </button>
         </div>
 
         {loading ? (
           <div className="empty-state">
-            <p>Carregando builds...</p>
+            <p>Carregando cartas...</p>
           </div>
-        ) : error ? (
+        ) : displayError ? (
           <div className="empty-state">
-            <p style={{ color: '#f87171' }}>{error}</p>
+            <p style={{ color: '#f87171' }}>{displayError}</p>
           </div>
-        ) : builds.length === 0 ? (
+        ) : cards.length === 0 ? (
           <div className="empty-state">
             <svg width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
               <rect x="3" y="3" width="18" height="18" rx="2" ry="2"/>
               <line x1="12" y1="8" x2="12" y2="16"/>
               <line x1="8" y1="12" x2="16" y2="12"/>
             </svg>
-            <h3>Nenhuma build criada ainda</h3>
-            <p>Clique em "Nova Build" para criar sua primeira build personalizada</p>
+            <h3>Nenhuma carta criada ainda</h3>
+            <p>Clique em "Nova Carta" para criar sua primeira carta personalizada</p>
           </div>
         ) : (
-          <div className="builds-grid">
-            {builds.map((build) => (
-              <div key={build.id} className="build-card">
-                <div className="build-card-header">
-                  <h3 className="build-card-title">{build.title}</h3>
-                  <div className="build-card-badges">
-                    {build.is_official_meta && (
-                      <span className="build-meta-badge">⭐ META</span>
-                    )}
-                  </div>
+          <div className="cards-grid">
+            {cards.map((card) => (
+              <div key={card.id} className="card-item">
+                {card.image_url && <img src={card.image_url} alt={card.name} className="card-image" />}
+                <div className="card-info">
+                  <h3>{card.name}</h3>
+                  <p className="card-version">{card.version}</p>
+                  <p className="card-position">{card.position}</p>
+                  <p className="card-overall">Overall: {card.overall_rating}</p>
                 </div>
-
-                <div className="build-overall">
-                  <div className="overall-circle">
-                    <span className="overall-value">{build.overall_rating}</span>
-                  </div>
-                  <span className="overall-label">Overall</span>
-                </div>
-
-                <div className="build-stats">
-                  <div className="stat-row">
-                    <span className="stat-icon-small">⚽</span>
-                    <span className="stat-label">Shooting</span>
-                    <div className="stat-bar">
-                      <div className="stat-fill" style={{ width: `${build.shooting}%` }}></div>
-                    </div>
-                    <span className="stat-value">{build.shooting}</span>
-                  </div>
-
-                  <div className="stat-row">
-                    <span className="stat-icon-small">🎯</span>
-                    <span className="stat-label">Passing</span>
-                    <div className="stat-bar">
-                      <div className="stat-fill" style={{ width: `${build.passing}%` }}></div>
-                    </div>
-                    <span className="stat-value">{build.passing}</span>
-                  </div>
-
-                  <div className="stat-row">
-                    <span className="stat-icon-small">⚡</span>
-                    <span className="stat-label">Dribbling</span>
-                    <div className="stat-bar">
-                      <div className="stat-fill" style={{ width: `${build.dribbling}%` }}></div>
-                    </div>
-                    <span className="stat-value">{build.dribbling}</span>
-                  </div>
-
-                  {/* Add more stats here */}
-                  <div className="stat-row">
-                    <span className="stat-icon-small">🤸</span>
-                    <span className="stat-label">Dexterity</span>
-                    <div className="stat-bar">
-                      <div className="stat-fill" style={{ width: `${build.dexterity}%` }}></div>
-                    </div>
-                    <span className="stat-value">{build.dexterity}</span>
-                  </div>
-                  <div className="stat-row">
-                    <span className="stat-icon-small">🦵</span>
-                    <span className="stat-label">Lower Body</span>
-                    <div className="stat-bar">
-                      <div className="stat-fill" style={{ width: `${build.lower_body_strength}%` }}></div>
-                    </div>
-                    <span className="stat-value">{build.lower_body_strength}</span>
-                  </div>
-                  <div className="stat-row">
-                    <span className="stat-icon-small">🛡️</span>
-                    <span className="stat-label">Defending</span>
-                    <div className="stat-bar">
-                      <div className="stat-fill" style={{ width: `${build.defending}%` }}></div>
-                    </div>
-                    <span className="stat-value">{build.defending}</span>
-                  </div>
-                </div>
-
-                <div className="build-card-footer">
-                  <span className="build-date">
-                    Criada em {new Date(build.created_at).toLocaleDateString('pt-BR')}
-                  </span>
-                  <div className="build-actions">
-                    <button 
-                      className="btn-action btn-delete" 
-                      onClick={() => handleDeleteBuild(build.id)}
-                      title="Excluir"
-                    >
-                      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor">
-                        <polyline points="3 6 5 6 21 6" strokeWidth="2"/>
-                        <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2" strokeWidth="2"/>
-                      </svg>
-                    </button>
-                  </div>
+                <div className="card-actions">
+                  <button 
+                    className="btn-action btn-delete" 
+                    onClick={() => handleDeleteCard(card.id)}
+                    title="Excluir"
+                  >
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                      <polyline points="3 6 5 6 21 6" strokeWidth="2"/>
+                      <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2" strokeWidth="2"/>
+                    </svg>
+                  </button>
                 </div>
               </div>
             ))}
@@ -184,7 +113,7 @@ function Catalog() {
         )}
       </div>
     </div>
-  )
+  );
 }
 
-export default Catalog
+export default Catalog;

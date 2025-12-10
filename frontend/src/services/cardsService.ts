@@ -50,15 +50,18 @@ class CardsService {
     offset?: number
   }): Promise<Card[]> {
     const queryParams = new URLSearchParams()
-    if (params?.player_id) queryParams.append('player_id', params.player_id.toString())
+    if (params?.player_id && !isNaN(params.player_id)) queryParams.append('player_id', params.player_id.toString())
     if (params?.position) queryParams.append('position', params.position)
     if (params?.card_type) queryParams.append('card_type', params.card_type)
     if (params?.search) queryParams.append('search', params.search)
     if (params?.limit) queryParams.append('limit', params.limit.toString())
     if (params?.offset) queryParams.append('offset', params.offset.toString())
 
+    const queryString = queryParams.toString();
+    const url = `${API_BASE_URL}/api/v1/cards${queryString ? `?${queryString}` : ''}`;
+
     const response = await fetch(
-      `${API_BASE_URL}/api/v1/cards?${queryParams}`,
+      url,
       { headers: this.getAuthHeaders() }
     )
 

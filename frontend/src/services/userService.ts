@@ -16,8 +16,8 @@ class UserService {
   // Dados padrão
   private defaultUser: UserData = {
     email: 'usuario@email.com',
-    full_name: 'Darlan Pinheiro',
-    nickname: 'DarlanPin...',
+    full_name: 'User Padrão',
+    nickname: 'User Padrão',
     platform: 'PC',
     is_premium: true,
     avatar_url: ''

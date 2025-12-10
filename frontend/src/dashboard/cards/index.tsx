@@ -1,7 +1,8 @@
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import './Cards.css';
-import FotoPadraoImage from '../../assets/Foto_padrao.png';
+import ImagemPadraoImage from '../../assets/Imagem_padrao - Editado.jpg';
+import { cardsService, type CardCreate } from '../../services/cardsService';
 
 interface CardFormData {
   name: string;
@@ -10,6 +11,7 @@ interface CardFormData {
   position: string;
   overall_rating: string;
   photo_url: string;
+  player_id: string;
 }
 
 function Cards() {
@@ -21,6 +23,7 @@ function Cards() {
     position: '',
     overall_rating: '',
     photo_url: '',
+    player_id: '1',
   });
 
   const [errors, setErrors] = useState<Record<string, string>>({});
@@ -83,7 +86,6 @@ function Cards() {
     if (!formData.overall_rating.trim()) newErrors.overall_rating = 'Overall Rating é obrigatório';
     if (!formData.photo_url.trim()) newErrors.photo_url = 'URL da Foto é obrigatório';
     
-    // Merge with existing errors (like URL validation)
     setErrors(prev => ({ ...prev, ...newErrors }));
     return Object.keys(newErrors).length === 0 && !errors.photo_url;
   };
@@ -93,12 +95,28 @@ function Cards() {
     setSuccess(false);
 
     if (validateForm() && !isVerifyingUrl) {
-      console.log('Form Data:', formData);
-      setSuccess(true);
+      try {
+        const cardData: CardCreate = {
+          name: formData.name,
+          version: formData.version,
+          card_type: formData.card_type,
+          position: formData.position,
+          overall_rating: parseInt(formData.overall_rating),
+          image_url: formData.photo_url,
+          player_id: parseInt(formData.player_id),
+        };
+        await cardsService.createCard(cardData);
+        setSuccess(true);
+        setTimeout(() => {
+          navigate('/dashboard/catalog');
+        }, 1500);
+      } catch (error: any) {
+        setErrors({ submit: error.message || 'Erro ao criar a carta' });
+      }
     }
   };
 
-  const placeholderImg = FotoPadraoImage;
+  const placeholderImg = ImagemPadraoImage;
   const isSubmitDisabled = isVerifyingUrl || Object.keys(errors).some(key => errors[key] && key !== 'submit');
 
   return (
@@ -110,7 +128,7 @@ function Cards() {
 
       {success && (
         <div className="success-message">
-          ✅ Carta salva com sucesso!
+          ✅ Carta salva com sucesso! Redirecionando...
         </div>
       )}
 
@@ -166,7 +184,7 @@ function Cards() {
                 src={imageError || !formData.photo_url ? placeholderImg : formData.photo_url}
                 alt="Pré-visualização da Carta"
                 className="card-image-preview"
-                style={{ marginTop: '1rem', width: '200px', height: '200px', objectFit: 'cover', borderRadius: '8px', border: '1px solid #2a2a2a' }}
+                style={{ marginTop: '1rem', maxWidth: '200px', height: 'auto', objectFit: 'contain', borderRadius: '8px', border: '1px solid #2a2a2a' }}
                 onError={() => setImageError(true)}
               />
             </div>

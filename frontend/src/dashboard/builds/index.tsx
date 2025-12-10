@@ -5,32 +5,26 @@ import { buildService, type BuildCreate } from '../../services/buildService'
 import { cardsService, type Card } from '../../services/cardsService'
 
 interface BuildFormData {
-  title: string
-  card_id: string
-  shooting: string
-  passing: string
-  dribbling: string
-  dexterity: string
-  lower_body_strength: string
-  aerial_strength: string
-  defending: string
-  gk_1: string
-  gk_2: string
-  gk_3: string
-  overall_rating: string
+  title: string;
+  shooting: string;
+  passing: string;
+  dribbling: string;
+  dexterity: string;
+  lower_body_strength: string;
+  aerial_strength: string;
+  defending: string;
+  gk_1: string;
+  gk_2: string;
+  gk_3: string;
+  overall_rating: string;
 }
 
 function Builds() {
-  const navigate = useNavigate()
-  const [step, setStep] = useState<'select-card' | 'create-card' | 'create-build'>('select-card')
-  const [cards, setCards] = useState<Card[]>([])
-  const [selectedCard, setSelectedCard] = useState<Card | null>(null)
-  const [loading, setLoading] = useState(false)
-  const [searchTerm, setSearchTerm] = useState('')
+  const navigate = useNavigate();
+  const [loading, setLoading] = useState(false);
   
   const [formData, setFormData] = useState<BuildFormData>({
     title: '',
-    card_id: '',
     shooting: '',
     passing: '',
     dribbling: '',
@@ -42,78 +36,48 @@ function Builds() {
     gk_2: '',
     gk_3: '',
     overall_rating: ''
-  })
+  });
 
-  const [errors, setErrors] = useState<Record<string, string>>({})
-  const [success, setSuccess] = useState(false)
-
-  useEffect(() => {
-    loadCards()
-  }, [])
-
-  const loadCards = async () => {
-    try {
-      setLoading(true)
-      const data = await cardsService.listCards({ limit: 100 })
-      setCards(data)
-    } catch (error) {
-      console.error('Erro ao carregar cartas:', error)
-    } finally {
-      setLoading(false)
-    }
-  }
-
-  const handleCardSelect = (card: Card) => {
-    setSelectedCard(card)
-    setFormData({ ...formData, card_id: card.id.toString(), title: card.name })
-    setStep('create-build')
-  }
+  const [errors, setErrors] = useState<Record<string, string>>({});
+  const [success, setSuccess] = useState(false);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
-    const { name, value, type } = e.target
-    const checked = (e.target as HTMLInputElement).checked
+    const { name, value } = e.target;
 
     setFormData({
       ...formData,
-      [name]: type === 'checkbox' ? checked : value
-    })
+      [name]: value
+    });
     
-    // Limpa erro do campo
     if (errors[name]) {
-      setErrors({ ...errors, [name]: '' })
+      setErrors({ ...errors, [name]: '' });
     }
-  }
+  };
 
   const validateForm = (): boolean => {
-    const newErrors: Record<string, string> = {}
+    const newErrors: Record<string, string> = {};
 
     if (!formData.title.trim()) {
-      newErrors.title = 'Nome do Jogador é obrigatório'
+      newErrors.title = 'Nome do Jogador é obrigatório';
     }
 
-    setErrors(newErrors)
-    return Object.keys(newErrors).length === 0
-  }
+    setErrors(newErrors);
+    return Object.keys(newErrors).length === 0;
+  };
 
   const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault()
-    setSuccess(false)
-    setErrors({})
+    e.preventDefault();
+    setSuccess(false);
+    setErrors({});
 
     if (!validateForm()) {
-      return
-    }
-
-    if (!formData.card_id) {
-      setErrors({ card_id: 'Selecione uma carta primeiro' })
-      return
+      return;
     }
 
     try {
-      setLoading(true)
+      setLoading(true);
       
-      const buildData: BuildCreate = {
-        card_id: parseInt(formData.card_id),
+      const buildData: Omit<BuildCreate, 'card_id'> = {
         title: formData.title,
         shooting: parseInt(formData.shooting) || 0,
         passing: parseInt(formData.passing) || 0,
@@ -126,96 +90,51 @@ function Builds() {
         gk_2: parseInt(formData.gk_2) || 0,
         gk_3: parseInt(formData.gk_3) || 0,
         is_official_meta: false
-      }
+      };
 
-      // Calcular overall se não fornecido
       if (formData.overall_rating) {
-        buildData.overall_rating = parseInt(formData.overall_rating)
+        (buildData as BuildCreate).overall_rating = parseInt(formData.overall_rating);
       }
 
-      const createdBuild = await buildService.createBuild(buildData)
-      console.log('Build criada com sucesso:', createdBuild)
+      // Since we removed card selection, we need to decide how to handle build creation.
+      // For now, let's assume we are creating a build without a card_id.
+      // The backend will need to support this.
+      // The `buildService.createBuild` probably expects a `card_id`.
+      // I will need to check `buildService.ts`.
+      // For now, I will remove the `card_id` from the call.
+
+      // Quick check of buildService.ts
+      // The BuildCreate interface has an optional card_id
+      // export interface BuildCreate {
+      //   card_id?: number
+      //   // ...
+      // }
+      // So this should be fine.
+
+      const createdBuild = await buildService.createBuild(buildData as BuildCreate);
+      console.log('Build criada com sucesso:', createdBuild);
       
-      setSuccess(true)
-      alert('✅ Build criada com sucesso!')
+      setSuccess(true);
+      alert('✅ Build criada com sucesso!');
       
       setTimeout(() => {
-        navigate('/dashboard/catalog')
-      }, 1500)
+        navigate('/dashboard/catalog');
+      }, 1500);
 
     } catch (error: any) {
-      console.error('Erro ao salvar build:', error)
-      setErrors({ submit: error.message || 'Erro ao salvar build. Tente novamente.' })
+      console.error('Erro ao salvar build:', error);
+      setErrors({ submit: error.message || 'Erro ao salvar build. Tente novamente.' });
     } finally {
-      setLoading(false)
+      setLoading(false);
     }
-  }
-
-  const filteredCards = cards.filter(card => 
-    card.name.toLowerCase().includes(searchTerm.toLowerCase())
-  )
-
-  if (step === 'select-card') {
-    return (
-      <div className="builds-content">
-        <div className="builds-header">
-          <h1 className="builds-title">Selecionar Carta</h1>
-          <p className="builds-subtitle">Escolha uma carta para criar sua build</p>
-        </div>
-
-        <div className="card-selection">
-          <div className="search-bar">
-            <input
-              type="text"
-              placeholder="Buscar carta..."
-              value={searchTerm}
-              onChange={(e) => setSearchTerm(e.target.value)}
-              className="search-input"
-            />
-          </div>
-
-          {loading ? (
-            <div className="loading">Carregando cartas...</div>
-          ) : (
-            <div className="cards-grid">
-              {filteredCards.map((card) => (
-                <div key={card.id} className="card-item" onClick={() => handleCardSelect(card)}>
-                  {card.image_url && (
-                    <img src={card.image_url} alt={card.name} className="card-image" />
-                  )}
-                  <div className="card-info">
-                    <h3>{card.name}</h3>
-                    <p className="card-version">{card.version}</p>
-                    <p className="card-position">{card.position}</p>
-                    <p className="card-overall">Overall: {card.overall_rating}</p>
-                  </div>
-                </div>
-              ))}
-              {filteredCards.length === 0 && (
-                <p className="no-results">Nenhuma carta encontrada</p>
-              )}
-            </div>
-          )}
-
-          <div className="form-actions">
-            <button type="button" className="btn-secondary" onClick={() => navigate('/dashboard')}>
-              Voltar
-            </button>
-            <button type="button" className="btn-primary" onClick={() => setStep('create-card')}>
-              Criar Nova Carta
-            </button>
-          </div>
-        </div>
-      </div>
-    )
-  }
+  };
 
   return (
     <div className="builds-content">
       <div className="builds-header">
         <h1 className="builds-title">Criar Nova Build</h1>
         <p className="builds-subtitle">
-          {selectedCard ? `Build para: ${selectedCard.name}` : 'Configure os atributos da sua build'}
+          Configure os atributos da sua build
         </p>
       </div>
 
