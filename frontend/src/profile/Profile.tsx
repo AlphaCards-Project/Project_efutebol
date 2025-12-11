@@ -8,6 +8,7 @@ interface UserProfile {
   nickname: string
   platform: string
   is_premium: boolean
+  role?: string
 }
 
 function Profile() {
@@ -21,14 +22,16 @@ function Profile() {
     full_name: '',
     nickname: '',
     platform: '',
-    is_premium: false
+    is_premium: false,
+    role: 'free'
   })
   const [editData, setEditData] = useState<UserProfile>({
     email: '',
     full_name: '',
     nickname: '',
     platform: '',
-    is_premium: false
+    is_premium: false,
+    role: 'free'
   })
 
   useEffect(() => {
@@ -65,7 +68,8 @@ function Profile() {
         full_name: userData.name || '',
         nickname: userData.nickname || '',
         platform: userData.platform || '',
-        is_premium: userData.is_premium
+        is_premium: userData.is_premium,
+        role: userData.role || 'free'
       }
       
       setProfileData(mappedData)
@@ -118,7 +122,8 @@ function Profile() {
         full_name: updatedUser.name || '',
         nickname: updatedUser.nickname || '',
         platform: updatedUser.platform || '',
-        is_premium: updatedUser.is_premium
+        is_premium: updatedUser.is_premium,
+        role: updatedUser.role || 'free'
       }
       
       setProfileData(mappedData)
@@ -154,7 +159,11 @@ function Profile() {
           </div>
           <h1 className="profile-title">{profileData.full_name}</h1>
           <p className="profile-subtitle">
-            {profileData.is_premium ? '⭐ Conta Premium' : '🎮 Conta Grátis'}
+            {profileData.role === 'admin' 
+              ? '👑 Administrador' 
+              : profileData.role === 'premium' 
+                ? '⭐ Conta Premium' 
+                : '🎮 Conta Grátis'}
           </p>
         </div>
 
@@ -228,7 +237,7 @@ function Profile() {
                   </svg>
                   Editar Perfil
                 </button>
-                {!profileData.is_premium && (
+                {profileData.role === 'free' && (
                   <button className="btn-upgrade">
                     <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor">
                       <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2" strokeWidth="2"/>

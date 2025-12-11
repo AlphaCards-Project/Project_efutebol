@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useState, useMemo } from 'react'
 import { useNavigate, Outlet, useLocation } from 'react-router-dom'
 import './Dashboard.css'
 
@@ -6,6 +6,12 @@ function DashboardLayout() {
   const navigate = useNavigate()
   const location = useLocation()
   const [sidebarCollapsed, setSidebarCollapsed] = useState(false)
+
+  // Pegar dados do usuário do localStorage
+  const user = useMemo(() => {
+    const userData = localStorage.getItem('user')
+    return userData ? JSON.parse(userData) : null
+  }, [])
 
   const menuItems = [
     { name: 'Home', icon: '🏠', path: '/dashboard' },

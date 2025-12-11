@@ -345,13 +345,23 @@ function UserSettings() {
                 <h3>Plano Atual</h3>
                 <div className="plan-card">
                   <div className="plan-header">
-                    <span className="plan-icon">{profileData.is_premium ? '⭐' : '🎮'}</span>
+                    <span className="plan-icon">
+                      {profileData.role === 'admin' ? '👑' : profileData.is_premium ? '⭐' : '🎮'}
+                    </span>
                     <div>
-                      <h4>{profileData.is_premium ? 'Premium' : 'Grátis'}</h4>
-                      <p>{profileData.is_premium ? 'Acesso ilimitado' : '5 perguntas por dia'}</p>
+                      <h4>
+                        {profileData.role === 'admin' ? 'Administrador' : profileData.is_premium ? 'Premium' : 'Grátis'}
+                      </h4>
+                      <p>
+                        {profileData.role === 'admin' 
+                          ? 'Acesso total ao sistema' 
+                          : profileData.is_premium 
+                            ? 'Acesso ilimitado' 
+                            : '5 perguntas por dia'}
+                      </p>
                     </div>
                   </div>
-                  {!profileData.is_premium && (
+                  {profileData.role === 'free' && (
                     <div className="plan-features">
                       <p className="feature">✓ 5 perguntas IA por dia</p>
                       <p className="feature">✓ Acesso ao FAQ</p>
@@ -361,7 +371,7 @@ function UserSettings() {
                 </div>
               </div>
 
-              {!profileData.is_premium && (
+              {profileData.role === 'free' && (
                 <div className="upgrade-plan">
                   <h3>Fazer Upgrade</h3>
                   <div className="plan-card premium">

@@ -3,6 +3,7 @@ from typing import List, Optional
 from app.schemas import PlayerCreate, PlayerResponse, PlayerUpdate, MessageResponse
 from app.services.supabase_service import supabase_service
 from app.core.security import get_current_user
+from app.models import UserRole
 
 router = APIRouter(prefix="/players", tags=["Players"])
 
@@ -22,7 +23,7 @@ async def create_player(
     """
     user_role = current_user.get("role", "free")
     
-    if user_role != "admin":
+    if user_role != UserRole.admin.value:
         raise HTTPException(
             status_code=status.HTTP_403_FORBIDDEN,
             detail="Apenas administradores podem criar jogadores"
@@ -149,7 +150,7 @@ async def update_player(
     """
     user_role = current_user.get("role", "free")
     
-    if user_role != "admin":
+    if user_role != UserRole.admin.value:
         raise HTTPException(
             status_code=status.HTTP_403_FORBIDDEN,
             detail="Apenas administradores podem editar jogadores"
@@ -205,7 +206,7 @@ async def delete_player(
     """
     user_role = current_user.get("role", "free")
     
-    if user_role != "admin":
+    if user_role != UserRole.admin.value:
         raise HTTPException(
             status_code=status.HTTP_403_FORBIDDEN,
             detail="Apenas administradores podem deletar jogadores"

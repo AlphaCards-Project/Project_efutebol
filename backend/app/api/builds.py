@@ -9,6 +9,7 @@ from app.services.rag_service import rag_service
 from app.services.cache_service import cache_service
 from app.services.supabase_service import supabase_service
 from app.core.security import get_current_user
+from app.models import UserRole
 
 router = APIRouter(prefix="/builds", tags=["Builds"])
 
@@ -348,7 +349,7 @@ async def delete_build(
             )
         
         # Apenas dono ou admin pode deletar
-        if existing.data[0]["user_id"] != user_id and user_role != "admin":
+        if existing.data[0]["user_id"] != user_id and user_role != UserRole.admin.value:
             raise HTTPException(
                 status_code=status.HTTP_403_FORBIDDEN,
                 detail="Você não tem permissão para deletar esta build"

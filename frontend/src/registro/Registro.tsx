@@ -62,6 +62,7 @@ function Registro() {
 
       const data = await response.json()
       localStorage.setItem('token', data.access_token)
+      localStorage.setItem('user', JSON.stringify(data.user))
       navigate('/chat')
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Erro ao criar conta')

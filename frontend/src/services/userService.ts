@@ -6,6 +6,7 @@ export interface UserData {
   nickname: string
   platform: string
   is_premium: boolean
+  role?: string
   avatar_url?: string
 }
 
@@ -20,6 +21,7 @@ class UserService {
     nickname: 'User Padrão',
     platform: 'PC',
     is_premium: true,
+    role: 'free',
     avatar_url: ''
   }
 

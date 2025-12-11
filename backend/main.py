@@ -1,7 +1,7 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from app.core.config import settings
-from app.api import auth, builds, gameplay, users, cards, players
+from app.api import auth, builds, gameplay, users, cards, players, admin
 
 app = FastAPI(
     title=settings.APP_NAME,
@@ -28,6 +28,7 @@ app.include_router(cards.router, prefix=settings.API_PREFIX)
 app.include_router(builds.router, prefix=settings.API_PREFIX)
 app.include_router(gameplay.router, prefix=settings.API_PREFIX)
 app.include_router(users.router, prefix=settings.API_PREFIX)
+app.include_router(admin.router, prefix=settings.API_PREFIX)
 
 
 @app.get("/")

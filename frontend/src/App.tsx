@@ -12,6 +12,7 @@ import Cards from './dashboard/cards'
 import Jogador from './dashboard/jogador'
 import { UserStats } from './dashboard/analytics'
 import ProtectedRoute from './components/ProtectedRoute'
+import AdminRoute from './components/AdminRoute'
 
 function App() {
   return (
@@ -27,9 +28,9 @@ function App() {
           </ProtectedRoute>
         } />
         <Route path="/dashboard" element={
-          <ProtectedRoute>
+          <AdminRoute>
             <DashboardLayout />
-          </ProtectedRoute>
+          </AdminRoute>
         }>
           <Route index element={<Dashboard />} />
           <Route path="builds" element={<Builds />} />

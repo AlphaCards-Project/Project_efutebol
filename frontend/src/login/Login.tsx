@@ -42,7 +42,18 @@ function Login() {
       }
 
       const data = await response.json()
+      console.log('🔐 Resposta do login:', data)
+      console.log('👤 Dados do usuário:', data.user)
+      console.log('🎭 Role do usuário:', data.user?.role)
+      
       localStorage.setItem('token', data.access_token)
+      localStorage.setItem('user', JSON.stringify(data.user))
+      
+      console.log('💾 Dados salvos no localStorage:', {
+        token: data.access_token.substring(0, 20) + '...',
+        user: JSON.parse(localStorage.getItem('user') || '{}')
+      })
+      
       navigate('/chat')
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Erro ao fazer login')

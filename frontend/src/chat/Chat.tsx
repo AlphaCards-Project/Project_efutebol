@@ -24,8 +24,31 @@ function Chat() {
   ])
 
   useEffect(() => {
-    // Carregar dados do userService
-    setUser(userService.getUserData())
+    // Primeiro, verificar se há dados no localStorage
+    const storedUser = localStorage.getItem('user')
+    if (storedUser) {
+      try {
+        const parsedUser = JSON.parse(storedUser)
+        console.log('📦 Usuário do localStorage:', parsedUser)
+        console.log('🎭 Role detectado:', parsedUser.role)
+        
+        const userData: UserData = {
+          email: parsedUser.email || 'usuario@email.com',
+          full_name: parsedUser.name || parsedUser.full_name || 'Usuário',
+          nickname: parsedUser.nickname || 'User',
+          platform: parsedUser.platform || 'PC',
+          is_premium: parsedUser.role === 'admin' || parsedUser.role === 'premium',
+          role: parsedUser.role || 'free',
+          avatar_url: ''
+        }
+        
+        console.log('✅ Usuário configurado:', userData)
+        setUser(userData)
+        userService.setUserData(userData)
+      } catch (e) {
+        console.error('❌ Erro ao parsear usuário do localStorage:', e)
+      }
+    }
     
     // Inscrever-se para mudanças
     const unsubscribe = userService.subscribe((userData) => {
@@ -33,8 +56,8 @@ function Chat() {
     })
 
     if (apiService.isAuthenticated()) {
-      loadUserData()
       loadQuota()
+      // Não chamar loadUserData aqui, usar dados do localStorage
     }
 
     return () => unsubscribe()
@@ -43,21 +66,32 @@ function Chat() {
   const loadUserData = async () => {
     try {
       const userData = await apiService.getCurrentUser()
+      console.log('🔍 Dados recebidos da API:', userData)
+      
       const mappedUser: UserData = {
         email: userData.email || 'usuario@email.com',
         full_name: userData.name || 'Administrador',
         nickname: userData.nickname || 'Admin',
         platform: userData.platform || 'PC',
-        is_premium: userData.is_premium || true,
+        is_premium: userData.role === 'admin' || userData.role === 'premium',
+        role: userData.role || 'free',
         avatar_url: ''
       }
+      
+      console.log('👤 Usuário mapeado:', mappedUser)
+      console.log('🎭 Role do usuário:', mappedUser.role)
+      
       userService.setUserData(mappedUser)
       setUser(mappedUser)
-      console.log('Dados do usuário carregados:', userData)
+      
+      // Atualizar localStorage também
+      localStorage.setItem('user', JSON.stringify({
+        ...userData,
+        full_name: userData.name
+      }))
     } catch (err) {
-      console.error('Erro ao carregar dados do usuário:', err)
-      // Usar dados padrão do userService
-      setUser(userService.getUserData())
+      console.warn('⚠️ Não foi possível atualizar dados do usuário da API, usando localStorage:', err)
+      // Continuar usando dados do localStorage
     }
   }
 
@@ -143,13 +177,15 @@ function Chat() {
         </div>
 
         <nav className="sidebar-nav">
-          <button className="sidebar-item" onClick={() => navigate('/dashboard')}>
-            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor">
-              <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
-              <circle cx="12" cy="7" r="4" strokeWidth="2"/>
-            </svg>
-            <span>Administrador</span>
-          </button>
+          {user?.role === 'admin' && (
+            <button className="sidebar-item" onClick={() => navigate('/dashboard')}>
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+                <circle cx="12" cy="7" r="4" strokeWidth="2"/>
+              </svg>
+              <span>Administrador</span>
+            </button>
+          )}
 
           <button className="sidebar-item" onClick={() => navigate('/user/settings')}>
             <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor">
@@ -223,7 +259,9 @@ function Chat() {
                   <span className="user-name-large">
                     {user?.full_name || 'Administrador'}
                   </span>
-                  <span className="user-plan-badge">{user?.is_premium ? 'PRO' : 'Grátis'}</span>
+                  <span className="user-plan-badge">
+                    {user?.role === 'admin' ? 'Administrador' : user?.role === 'premium' ? 'Premium' : 'Grátis'}
+                  </span>
                 </div>
                 <button 
                   className="btn-edit-profile" 
@@ -237,7 +275,7 @@ function Chat() {
                 </button>
               </div>
               
-              {!user?.is_premium && (
+              {user?.role === 'free' && (
                 <button className="btn-upgrade-footer" onClick={() => navigate('/user/settings')}>
                   Fazer upgrade
                 </button>

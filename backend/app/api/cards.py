@@ -3,13 +3,14 @@ from typing import List, Optional
 from app.schemas import CardCreate, CardResponse, CardUpdate, MessageResponse
 from app.services.supabase_service import supabase_service
 from app.core.security import get_current_user
+from app.core.deps import get_current_admin
 
 router = APIRouter(prefix="/cards", tags=["Cards"])
 
 @router.post("/", response_model=CardResponse, status_code=status.HTTP_201_CREATED)
 async def create_card(
     card_data: CardCreate,
-    current_user: dict = Depends(get_current_user)
+    current_user: dict = Depends(get_current_admin)
 ):
     """
     Cria uma nova carta de jogador
@@ -24,13 +25,6 @@ async def create_card(
     - **overall_rating**: Overall da carta (ex: 98)
     - **image_url**: URL da imagem da carta (opcional)
     """
-    user_role = current_user.get("role", "free")
-    
-    if user_role != "admin":
-        raise HTTPException(
-            status_code=status.HTTP_403_FORBIDDEN,
-            detail="Apenas administradores podem criar cartas"
-        )
     
     try:
         # Verificar se o jogador existe
@@ -154,20 +148,13 @@ async def get_card(
 async def update_card(
     card_id: int,
     card_data: CardUpdate,
-    current_user: dict = Depends(get_current_user)
+    current_user: dict = Depends(get_current_admin)
 ):
     """
     Atualiza dados de uma carta
     
     **Apenas administradores podem atualizar cartas**
     """
-    user_role = current_user.get("role", "free")
-    
-    if user_role != "admin":
-        raise HTTPException(
-            status_code=status.HTTP_403_FORBIDDEN,
-            detail="Apenas administradores podem editar cartas"
-        )
     
     try:
         # Verificar se carta existe
@@ -210,20 +197,13 @@ async def update_card(
 @router.delete("/{card_id}", response_model=MessageResponse)
 async def delete_card(
     card_id: int,
-    current_user: dict = Depends(get_current_user)
+    current_user: dict = Depends(get_current_admin)
 ):
     """
     Deleta uma carta
     
     **Apenas administradores podem deletar cartas**
     """
-    user_role = current_user.get("role", "free")
-    
-    if user_role != "admin":
-        raise HTTPException(
-            status_code=status.HTTP_403_FORBIDDEN,
-            detail="Apenas administradores podem deletar cartas"
-        )
     
     try:
         # Verificar se carta existe
