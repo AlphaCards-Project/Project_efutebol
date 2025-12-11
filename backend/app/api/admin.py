@@ -69,7 +69,7 @@ async def list_all_users(
     """
     try:
         response = supabase_service.client.table("users")\
-            .select("id, email, name, role, is_premium, created_at")\
+            .select("id, email, name, role, created_at")\
             .order("created_at", desc=True)\
             .range(offset, offset + limit - 1)\
             .execute()
@@ -110,7 +110,7 @@ async def promote_user_to_admin(
         
         # Promover para admin
         supabase_service.client.table("users")\
-            .update({"role": UserRole.admin.value, "is_premium": True})\
+            .update({"role": UserRole.admin.value})\
             .eq("id", user_id)\
             .execute()
         
@@ -162,7 +162,7 @@ async def demote_user(
         
         # Rebaixar para free
         supabase_service.client.table("users")\
-            .update({"role": UserRole.free.value, "is_premium": False})\
+            .update({"role": UserRole.free.value})\
             .eq("id", user_id)\
             .execute()
         

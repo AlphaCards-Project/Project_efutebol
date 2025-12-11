@@ -63,7 +63,6 @@ class UserResponse(BaseModel):
     name: Optional[str] = None
     platform: Optional[str] = None
     role: str = "free"
-    is_premium: bool = False
     daily_questions_used: int = 0
     created_at: datetime
     
@@ -76,7 +75,6 @@ class UserResponse(BaseModel):
                 "nickname": "joaogamer",
                 "platform": "console",
                 "role": "free",
-                "is_premium": False,
                 "daily_questions_used": 0,
                 "created_at": "2024-01-01T00:00:00"
             }
@@ -97,7 +95,7 @@ class Token(BaseModel):
                     "id": "550e8400-e29b-41d4-a716-446655440000",
                     "email": "usuario@exemplo.com",
                     "name": "João Silva",
-                    "is_premium": False,
+                    "role": "free",
                     "daily_questions_used": 0,
                     "created_at": "2024-01-01T00:00:00"
                 }
@@ -143,7 +141,7 @@ class QuotaResponse(BaseModel):
     daily_limit: int
     questions_used: int
     questions_remaining: int
-    is_premium: bool
+    role: str
     reset_time: datetime
 
 

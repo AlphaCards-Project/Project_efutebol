@@ -38,7 +38,6 @@ class SupabaseService:
                     "name": full_name,
                     "platform": platform,
                     "role": "free",
-                    "is_premium": False,
                     "daily_questions_used": 0,
                     "last_reset": datetime.now(timezone.utc).isoformat(),
                     "created_at": datetime.now(timezone.utc).isoformat()
@@ -61,7 +60,6 @@ class SupabaseService:
                     "name": full_name,
                     "platform": platform,
                     "role": "free",
-                    "is_premium": False,
                     "daily_questions_used": 0,
                     "created_at": user_data["created_at"]
                 }
@@ -84,7 +82,7 @@ class SupabaseService:
                 
                 # Tentar buscar role da tabela users
                 try:
-                    user_data = self.client.table("users").select("role, is_premium, platform, name").eq("id", user_id).execute()
+                    user_data = self.client.table("users").select("role, platform, name").eq("id", user_id).execute()
                     if user_data.data and len(user_data.data) > 0:
                         user_record = user_data.data[0]
                         return {
@@ -93,7 +91,6 @@ class SupabaseService:
                             "name": user_record.get("name") or auth_response.user.user_metadata.get("full_name") if auth_response.user.user_metadata else None,
                             "platform": user_record.get("platform"),
                             "role": user_record.get("role", "free"),
-                            "is_premium": user_record.get("is_premium", False),
                             "daily_questions_used": 0,
                             "created_at": str(auth_response.user.created_at) if auth_response.user.created_at else str(datetime.now(timezone.utc))
                         }
@@ -107,7 +104,6 @@ class SupabaseService:
                     "name": auth_response.user.user_metadata.get("full_name") if auth_response.user.user_metadata else None,
                     "platform": None,
                     "role": "free",
-                    "is_premium": False,
                     "daily_questions_used": 0,
                     "created_at": str(auth_response.user.created_at) if auth_response.user.created_at else str(datetime.now(timezone.utc))
                 }
@@ -142,7 +138,7 @@ class SupabaseService:
             "daily_limit": settings.FREE_TIER_DAILY_LIMIT,
             "questions_used": 0,
             "questions_remaining": settings.FREE_TIER_DAILY_LIMIT,
-            "is_premium": False,
+            "role": "free",
             "reset_time": (datetime.now(timezone.utc) + timedelta(days=1)).isoformat()
         }
 

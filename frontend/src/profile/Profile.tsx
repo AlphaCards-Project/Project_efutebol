@@ -7,8 +7,7 @@ interface UserProfile {
   full_name: string
   nickname: string
   platform: string
-  is_premium: boolean
-  role?: string
+  role: string
 }
 
 function Profile() {
@@ -22,7 +21,6 @@ function Profile() {
     full_name: '',
     nickname: '',
     platform: '',
-    is_premium: false,
     role: 'free'
   })
   const [editData, setEditData] = useState<UserProfile>({
@@ -30,7 +28,6 @@ function Profile() {
     full_name: '',
     nickname: '',
     platform: '',
-    is_premium: false,
     role: 'free'
   })
 
@@ -68,7 +65,6 @@ function Profile() {
         full_name: userData.name || '',
         nickname: userData.nickname || '',
         platform: userData.platform || '',
-        is_premium: userData.is_premium,
         role: userData.role || 'free'
       }
       
@@ -122,7 +118,6 @@ function Profile() {
         full_name: updatedUser.name || '',
         nickname: updatedUser.nickname || '',
         platform: updatedUser.platform || '',
-        is_premium: updatedUser.is_premium,
         role: updatedUser.role || 'free'
       }
       

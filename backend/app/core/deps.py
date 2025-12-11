@@ -61,14 +61,13 @@ async def get_current_premium_user(
         HTTPException: 403 FORBIDDEN se o usuário for free
     """
     user_role = current_user.get("role", "free")
-    is_premium = current_user.get("is_premium", False)
     
     # Admin sempre tem acesso
     if user_role == UserRole.admin.value:
         return current_user
     
     # Verifica se é premium
-    if not is_premium and user_role != UserRole.premium.value:
+    if user_role != UserRole.premium.value:
         raise HTTPException(
             status_code=status.HTTP_403_FORBIDDEN,
             detail="Acesso negado. Esta funcionalidade requer assinatura premium."

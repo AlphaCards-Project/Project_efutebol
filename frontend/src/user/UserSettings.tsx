@@ -118,7 +118,9 @@ function UserSettings() {
             {profileData.full_name?.[0]?.toUpperCase() || 'U'}
           </div>
           <h1 className="settings-title">{profileData.full_name}</h1>
-          <p className="settings-subtitle">{profileData.is_premium ? '⭐ Premium' : '🎮 Grátis'}</p>
+          <p className="settings-subtitle">
+            {profileData.role === 'admin' ? '👑 Administrador' : profileData.role === 'premium' ? '⭐ Premium' : '🎮 Grátis'}
+          </p>
         </div>
 
         {/* Tabs */}
@@ -346,16 +348,16 @@ function UserSettings() {
                 <div className="plan-card">
                   <div className="plan-header">
                     <span className="plan-icon">
-                      {profileData.role === 'admin' ? '👑' : profileData.is_premium ? '⭐' : '🎮'}
+                      {profileData.role === 'admin' ? '👑' : profileData.role === 'premium' ? '⭐' : '🎮'}
                     </span>
                     <div>
                       <h4>
-                        {profileData.role === 'admin' ? 'Administrador' : profileData.is_premium ? 'Premium' : 'Grátis'}
+                        {profileData.role === 'admin' ? 'Administrador' : profileData.role === 'premium' ? 'Premium' : 'Grátis'}
                       </h4>
                       <p>
                         {profileData.role === 'admin' 
                           ? 'Acesso total ao sistema' 
-                          : profileData.is_premium 
+                          : profileData.role === 'premium' 
                             ? 'Acesso ilimitado' 
                             : '5 perguntas por dia'}
                       </p>

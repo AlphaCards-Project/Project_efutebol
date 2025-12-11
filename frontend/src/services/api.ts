@@ -10,7 +10,6 @@ interface LoginResponse {
     nickname?: string
     platform?: string
     role: string
-    is_premium: boolean
     daily_questions_used: number
     created_at: string
   }
@@ -28,7 +27,7 @@ interface QuotaResponse {
   daily_limit: number
   questions_used: number
   questions_remaining: number
-  is_premium: boolean
+  role: string
   reset_time: string
 }
 

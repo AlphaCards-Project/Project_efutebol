@@ -65,7 +65,16 @@ async def get_current_user_profile(current_user: dict = Depends(get_current_user
             detail="Usuário não encontrado"
         )
     
-    return UserResponse(**user)
+    # Mapear corretamente os dados
+    return UserResponse(
+        id=str(user["id"]),
+        email=user["email"],
+        name=user.get("name"),
+        platform=user.get("platform"),
+        role=user.get("role", "free"),
+        daily_questions_used=user.get("daily_questions_used", 0),
+        created_at=user["created_at"]
+    )
 
 
 @router.post("/upgrade-premium", response_model=MessageResponse)
@@ -130,8 +139,7 @@ async def update_user_profile(
             name=user.get("name"),
             nickname=user.get("nickname"),
             platform=user.get("platform"),
-            role=user.get("role", "user"),
-            is_premium=user.get("is_premium", False),
+            role=user.get("role", "free"),
             daily_questions_used=user.get("daily_questions_used", 0),
             created_at=user.get("created_at")
         )

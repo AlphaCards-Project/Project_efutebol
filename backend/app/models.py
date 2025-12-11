@@ -24,7 +24,6 @@ class User(Base):
     name = Column(String, nullable=True)
     platform = Column(Enum(UserPlatform, name="user_platform", create_type=False), nullable=True)
     role = Column(Enum(UserRole, name="user_role", create_type=False), default=UserRole.free, nullable=False)
-    is_premium = Column(Boolean, default=False)
     daily_questions_used = Column(Integer, default=0)
     last_reset = Column(DateTime(timezone=True), server_default=func.now())
     created_at = Column(DateTime(timezone=True), server_default=func.now())

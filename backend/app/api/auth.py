@@ -33,7 +33,6 @@ async def register(user_data: UserRegister):
             data={
                 "sub": user["id"],
                 "email": user["email"],
-                "is_premium": user.get("is_premium", False),
                 "role": user.get("role", "free")
             }
         )
@@ -85,7 +84,6 @@ async def login(credentials: UserLogin):
             data={
                 "sub": user["id"],
                 "email": user["email"],
-                "is_premium": user.get("is_premium", False),
                 "role": user.get("role", "free")
             }
         )

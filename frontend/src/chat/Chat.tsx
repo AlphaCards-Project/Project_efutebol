@@ -24,74 +24,47 @@ function Chat() {
   ])
 
   useEffect(() => {
-    // Primeiro, verificar se há dados no localStorage
-    const storedUser = localStorage.getItem('user')
-    if (storedUser) {
-      try {
-        const parsedUser = JSON.parse(storedUser)
-        console.log('📦 Usuário do localStorage:', parsedUser)
-        console.log('🎭 Role detectado:', parsedUser.role)
-        
-        const userData: UserData = {
-          email: parsedUser.email || 'usuario@email.com',
-          full_name: parsedUser.name || parsedUser.full_name || 'Usuário',
-          nickname: parsedUser.nickname || 'User',
-          platform: parsedUser.platform || 'PC',
-          is_premium: parsedUser.role === 'admin' || parsedUser.role === 'premium',
-          role: parsedUser.role || 'free',
-          avatar_url: ''
-        }
-        
-        console.log('✅ Usuário configurado:', userData)
-        setUser(userData)
-        userService.setUserData(userData)
-      } catch (e) {
-        console.error('❌ Erro ao parsear usuário do localStorage:', e)
-      }
-    }
-    
     // Inscrever-se para mudanças
     const unsubscribe = userService.subscribe((userData) => {
       setUser(userData)
     })
 
     if (apiService.isAuthenticated()) {
+      // Carregar dados do servidor para garantir que estão atualizados
+      loadUserData()
       loadQuota()
-      // Não chamar loadUserData aqui, usar dados do localStorage
     }
 
     return () => unsubscribe()
   }, [])
 
   const loadUserData = async () => {
+    // SEMPRE usar dados do localStorage que foram salvos no login
+    const storedUser = localStorage.getItem('user')
+    if (!storedUser) {
+      console.warn('⚠️ Nenhum usuário no localStorage')
+      return
+    }
+
     try {
-      const userData = await apiService.getCurrentUser()
-      console.log('🔍 Dados recebidos da API:', userData)
+      const parsedUser = JSON.parse(storedUser)
+      console.log('📦 Usuário salvo no login:', parsedUser)
+      console.log('🎭 Role:', parsedUser.role)
       
-      const mappedUser: UserData = {
-        email: userData.email || 'usuario@email.com',
-        full_name: userData.name || 'Administrador',
-        nickname: userData.nickname || 'Admin',
-        platform: userData.platform || 'PC',
-        is_premium: userData.role === 'admin' || userData.role === 'premium',
-        role: userData.role || 'free',
+      const userData: UserData = {
+        email: parsedUser.email || 'usuario@email.com',
+        full_name: parsedUser.name || parsedUser.full_name || 'Usuário',
+        nickname: parsedUser.nickname || 'User',
+        platform: parsedUser.platform || 'PC',
+        role: parsedUser.role || 'free',
         avatar_url: ''
       }
       
-      console.log('👤 Usuário mapeado:', mappedUser)
-      console.log('🎭 Role do usuário:', mappedUser.role)
-      
-      userService.setUserData(mappedUser)
-      setUser(mappedUser)
-      
-      // Atualizar localStorage também
-      localStorage.setItem('user', JSON.stringify({
-        ...userData,
-        full_name: userData.name
-      }))
+      console.log('✅ Usuário carregado:', userData)
+      userService.setUserData(userData)
+      setUser(userData)
     } catch (err) {
-      console.warn('⚠️ Não foi possível atualizar dados do usuário da API, usando localStorage:', err)
-      // Continuar usando dados do localStorage
+      console.error('❌ Erro ao parsear usuário:', err)
     }
   }
 
@@ -328,7 +301,7 @@ function Chat() {
             <div className="chat-welcome">
               <h1 className="welcome-title">Seu Treinador de IA está online!</h1>
               <p className="welcome-subtitle">Estou aqui para te ajudar a evoluir no eFootball. Vamos treinar e alcançar seus objetivos juntos!</p>
-              {(!apiService.isAuthenticated() || (user && !user.is_premium)) && (
+              {(!apiService.isAuthenticated() || (user && user.role === 'free')) && (
                 <p className="welcome-quota">
                   Treinamento diário: Você ainda tem <span className="quota-highlight">{quota?.questions_remaining ?? 5}</span> análises disponíveis.
                 </p>
